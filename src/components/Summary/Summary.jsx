@@ -19,9 +19,81 @@ import {
 import "./Summary.css";
 
 const Summary = ({ orderDetails, groups }) => {
+  const getTotalGroupsContribution = () => {
+    let totalPrice = 0;
+    const groupNames = Object.keys(groups);
+    for (let i = 0; i < groupNames.length; i++) {
+      totalPrice += groups[groupNames[i]].reduce((a, b) => {
+        return a + b["price"];
+      }, 0);
+    }
+
+    return totalPrice;
+  };
+
   return (
     <Container maxWidth={false}>
       <Grid container>
+        <Grid xs={12} item>
+          <Card
+            sx={{
+              float: "left",
+              margin: "1%",
+              minWidth: "100%",
+            }}
+            key={"MainSummary"}
+          >
+            <CardContent>
+              <Typography
+                sx={{ fontSize: 14 }}
+                color="text.secondary"
+                gutterBottom
+              >
+                Sub Total (Excluding all taxes and fees): $
+                {orderDetails.subTotal}
+              </Typography>
+              <Typography
+                sx={{ fontSize: 14 }}
+                color="text.secondary"
+                gutterBottom
+              >
+                Tax: ${orderDetails.tax}
+              </Typography>
+
+              <Typography
+                sx={{ fontSize: 14 }}
+                color="text.secondary"
+                gutterBottom
+              >
+                Delivery Fee: ${orderDetails.deliveryFee}
+              </Typography>
+
+              <Typography
+                sx={{ fontSize: 14 }}
+                color="text.secondary"
+                gutterBottom
+              >
+                Delivery Tip: ${orderDetails.tip}
+              </Typography>
+
+              <Typography
+                sx={{ fontSize: 14 }}
+                color="text.secondary"
+                gutterBottom
+              >
+                Total: ${orderDetails.total}
+              </Typography>
+
+              <Typography
+                sx={{ fontSize: 14 }}
+                color="text.secondary"
+                gutterBottom
+              >
+                All Groups Sum: ${getTotalGroupsContribution()}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
         <Grid xs={12} item>
           {Object.keys(groups).map((groupName) => {
             return (

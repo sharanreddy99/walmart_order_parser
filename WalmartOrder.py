@@ -29,6 +29,13 @@ class WalmartOrder:
         
         return res
     
+    def clearUnavailableItemPrices(self):
+        for i in range(len(self.ordersArr)):
+            if self.ordersArr[i].status == 'Unavailable':
+                self.ordersArr[i].price = 0
+
+
     def toJSON(self):
+        self.clearUnavailableItemPrices()
         return json.dumps(self, default=lambda o: o.__dict__, 
             sort_keys=True, indent=4)

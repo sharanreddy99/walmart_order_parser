@@ -31,6 +31,12 @@ const App = () => {
         }
       );
 
+      setGroups(
+        Object.keys(groups).reduce((obj, key) => {
+          obj[key] = [];
+          return obj;
+        }, {})
+      );
       setOrderDetails(resp.data);
     } else {
       alert("Please choose a file");
