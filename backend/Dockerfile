@@ -9,4 +9,4 @@ RUN python3 -m pip install -r /app/backend/requirements.txt
 
 WORKDIR /app/backend
 
-CMD ["flask", "run", "--debug"]
+CMD ["flask", "run", "--host=0.0.0.0"]

@@ -8,6 +8,11 @@ from flask_cors import CORS, cross_origin
 app = Flask(__name__)
 CORS(app, support_credentials=True)
 
+@app.route("/", methods=["GET","POST"])
+@cross_origin(supports_credentials=True)
+def healthcheck():
+    return 'The server is alive'
+
 @app.route("/upload_order", methods=["POST"])
 @cross_origin(supports_credentials=True)
 def upload_folder():
