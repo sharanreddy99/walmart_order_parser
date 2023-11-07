@@ -34,35 +34,76 @@ def upload_folder():
         
         orderName = rows[0].text
         obj = WalmartOrder(orderName)
-        
-        i = 1
-        while i < len(rows) and 'subtotal' not in rows[i].text.lower():
-            obj.ordersArr.append(WalmartItem(rows[i].text))
-            i += 1
 
-        while i < len(rows) and 'total' != rows[i].text.rstrip(' ').lower():
-            i += 1
-        
-        i += 3
+        itemKeys = []
+        itemValues = []
 
-
-        total = 0
         idx = 0
-        while i < len(rows) and 'qty' in rows[i].text.lower():
-            status, _, qty = rows[i].text.rstrip(" ").split(" ")
-            obj.ordersArr[idx].status = status
-            obj.ordersArr[idx].quantity = int(qty)
-            obj.ordersArr[idx].price = float(rows[i+1].text.strip(' $'))
 
-            i += 2
+        i = 1
+        while i < len(rows):
+            if '-$' in rows[i].text.lower():
+                i += 1
+                continue
+
+            if 'payment method' in rows[i].text.lower() or 'ending in' in rows[i].text.lower():
+                i += 1
+                continue
+
+            for key in ['Subtotal', 'Savings', 'Delivery from store', 'Tax', 'Driver tip', 'Total']:
+                if key.lower() in rows[i].text.lower():
+                    itemKeys.append(rows[i].text)
+                    i += 1
+                    break
+            else:
+                if 'qty' in rows[i].text.lower():
+                    status, qty = 'Delivered', 0
+                    if(len(rows[i].text.rstrip(" ").split(" ")) == 2):
+                        _, qty = rows[i].text.rstrip(" ").split(" ")
+                    else:
+                        status, _, qty = rows[i].text.rstrip(" ").split(" ")
+
+                    qty = float(qty)
+                    price = float(rows[i+1].text.strip(' $'))
+                    
+                    itemValues.append((status, qty, price))
+                    i += 2
+                
+                else:
+                    if '$' in rows[i].text.strip(" ").split(" ")[-1].strip(" "):
+                        try:
+                            value = float(rows[i].text.strip(" ").split(" ")[-1][1:].strip(" "))
+                            itemValues.append(value)
+                        except Exception as e:
+                            itemKeys.append(rows[i].text.strip(" "))
+                    else:
+                        itemKeys.append(rows[i].text.strip(" "))
+                    i += 1
+            
+        idx = 0
+        for i in range(len(itemValues)):
+            key = itemKeys[i]
+            if '-$' in key.lower():
+                continue
+
+            if 'subtotal' in key.lower():
+                obj.subTotal = itemValues[idx]
+            elif 'savings' in key.lower():
+                obj.subTotal = itemValues[idx]
+            elif 'delivery from store' in key.lower():
+                obj.deliveryFee = itemValues[idx]
+            elif 'tax' in key.lower():
+                obj.tax = itemValues[idx]
+            elif 'driver tip' in key.lower():
+                obj.tip = itemValues[idx]
+            elif 'total' in key.lower():
+                obj.total = itemValues[idx]
+            else:
+                item = WalmartItem(itemKeys[idx])
+                item.status = itemValues[idx][0]
+                item.quantity = itemValues[idx][1]
+                item.price = itemValues[idx][2]
+                obj.ordersArr.append(item)
             idx += 1
-
-        obj.subTotal = float(rows[i+1].text.strip('$ '))
-        obj.deliveryFee = float(rows[i+2].text.rstrip(' ').split(" ")[-1].strip('$'))
-        obj.tax = float(rows[i+3].text.strip('$'))
-        obj.tip = float(rows[i+4].text.strip('$'))
-        obj.total = float(rows[i+5].text.strip('$ '))
-
-        i += 6
         
         return obj.toJSON()
