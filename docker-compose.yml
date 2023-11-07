@@ -1,0 +1,34 @@
+version: "3.9"
+services:
+  react:
+    container_name: walmart_parser_frontend
+    build:
+      context: ./frontend
+    environment:
+      VITE_WALMART_PARSER_BACKEND_URL: ${WALMART_PARSER_BACKEND_URL}
+    volumes:
+      - ./frontend:/app/frontend
+      - /app/frontend/node_modules
+    ports:
+      - ${WALMART_PARSER_FRONTEND_PORT}:3000
+
+  flask:
+    container_name: walmart_parser_backend
+    build:
+      context: ./backend
+    env_file: .env
+    volumes:
+      - ./backend/:/app/backend
+    ports:
+      - ${WALMART_PARSER_BACKEND_PORT}:5000
+
+  nginx:
+    depends_on:
+      - flask
+      - react
+    restart: always
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    ports:
+      - ${WALMART_PARSER_NGINX_PORT}:80
