@@ -22,9 +22,7 @@ const App = () => {
       var formData = new FormData();
       formData.append("order", selectedFile);
       const resp = await axios.post(
-        import.meta.env.VITE_WALMART_PARSER_BACKEND_URL +
-          "/api" +
-          "/upload_order",
+        import.meta.env.VITE_WALMART_PARSER_BACKEND_URL + "/upload_order",
         formData,
         {
           headers: {
