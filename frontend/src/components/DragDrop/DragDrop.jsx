@@ -82,37 +82,50 @@ const DragDrop = ({ groups, setGroups, orderDetails, setOrderDetails }) => {
   return (
     <Container className="App" maxWidth={false}>
       <Grid container>
-        <Grid xs={6} item>
-          <Typography
-            sx={{
-              fontSize: 18,
-              fontWeight: "bold",
-              textTransform: "uppercase",
-            }}
-            gutterBottom
-          >
-            Orders
-          </Typography>
-          <div className="widgets">
-            {Object.keys(orderDetails).length > 0
-              ? orderDetails.ordersArr.map((order) => {
-                  return (
-                    <div
-                      className="widget"
-                      draggable
-                      onDragStart={(e) => handleOnDrag(e, order)}
-                      onDrop={handleOnDrop}
-                      key={order.name}
-                      id={order.name}
-                    >
-                      {order.name}
-                    </div>
-                  );
-                })
-              : null}
-          </div>{" "}
-        </Grid>
-        <Grid xs={6} item>
+        {Object.keys(orderDetails).length == 0 ||
+        (Object.keys(orderDetails).length > 0 &&
+          orderDetails.ordersArr.length == 0) ? null : (
+          <Grid xs={6} item>
+            <Typography
+              sx={{
+                fontSize: 18,
+                fontWeight: "bold",
+                textTransform: "uppercase",
+              }}
+              gutterBottom
+            >
+              Orders
+            </Typography>
+            <div className="widgets">
+              {Object.keys(orderDetails).length > 0
+                ? orderDetails.ordersArr.map((order) => {
+                    return (
+                      <div
+                        className="widget"
+                        draggable
+                        onDragStart={(e) => handleOnDrag(e, order)}
+                        onDrop={handleOnDrop}
+                        key={order.name}
+                        id={order.name}
+                      >
+                        {order.name}
+                      </div>
+                    );
+                  })
+                : null}
+            </div>{" "}
+          </Grid>
+        )}
+        <Grid
+          xs={
+            Object.keys(orderDetails).length == 0 ||
+            (Object.keys(orderDetails).length > 0 &&
+              orderDetails.ordersArr.length == 0)
+              ? 12
+              : 6
+          }
+          item
+        >
           <Typography
             sx={{
               fontSize: 18,
