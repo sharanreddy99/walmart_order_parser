@@ -28,7 +28,7 @@ const Summary = ({ orderDetails, groups }) => {
       }, 0);
     }
 
-    return totalPrice;
+    return totalPrice.toFixed(4);
   };
 
   return (
@@ -39,80 +39,113 @@ const Summary = ({ orderDetails, groups }) => {
             sx={{
               float: "left",
               margin: "1%",
-              minWidth: "100%",
+              maxWidth: 460,
             }}
-            key={"MainSummary"}
+            key={"Order Summary"}
           >
             <CardContent>
               <Typography
                 sx={{
                   fontSize: 14,
-
+                  fontWeight: "bold",
                   textTransform: "uppercase",
                 }}
                 gutterBottom
               >
-                Sub Total (Excluding all taxes and fees): $
-                {orderDetails.subTotal}
+                Order Summary
               </Typography>
-              <Typography
-                sx={{
-                  fontSize: 14,
-
-                  textTransform: "uppercase",
-                }}
-                gutterBottom
-              >
-                Tax: ${orderDetails.tax}
-              </Typography>
-
-              <Typography
-                sx={{
-                  fontSize: 14,
-
-                  textTransform: "uppercase",
-                }}
-                gutterBottom
-              >
-                Delivery Fee: ${orderDetails.deliveryFee}
-              </Typography>
-
-              <Typography
-                sx={{
-                  fontSize: 14,
-
-                  textTransform: "uppercase",
-                }}
-                gutterBottom
-              >
-                Delivery Tip: ${orderDetails.tip}
-              </Typography>
-
-              <Typography
-                sx={{
-                  fontSize: 14,
-
-                  textTransform: "uppercase",
-                }}
-                gutterBottom
-              >
-                Total: ${orderDetails.total}
-              </Typography>
-
-              <Typography
-                sx={{
-                  fontSize: 14,
-
-                  textTransform: "uppercase",
-                }}
-                gutterBottom
-              >
-                All Groups Sum: ${getTotalGroupsContribution()}
-              </Typography>
+              <TableContainer component={Paper}>
+                <Table sx={{ maxWidth: 450 }} aria-label="simple table">
+                  <TableHead>
+                    <TableRow className="table_header">
+                      <TableCell className="table_header_cell">Field</TableCell>
+                      <TableCell className="table_header_cell">Value</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    <TableRow
+                      className="table_body"
+                      key={"table_summary_row1"}
+                      sx={{
+                        "&:last-child td, &:last-child th": { border: 0 },
+                      }}
+                    >
+                      <TableCell>
+                        Sub Total (Excluding all taxes and fees)
+                      </TableCell>
+                      <TableCell>{orderDetails.subTotal || 0}</TableCell>
+                    </TableRow>
+                    <TableRow
+                      className="table_body"
+                      key={"table_summary_row1"}
+                      sx={{
+                        "&:last-child td, &:last-child th": { border: 0 },
+                      }}
+                    >
+                      <TableCell>Tax</TableCell>
+                      <TableCell>{orderDetails.tax || 0}</TableCell>
+                    </TableRow>
+                    <TableRow
+                      className="table_body"
+                      key={"table_summary_row1"}
+                      sx={{
+                        "&:last-child td, &:last-child th": { border: 0 },
+                      }}
+                    >
+                      <TableCell>Delivery Fee</TableCell>
+                      <TableCell>{orderDetails.deliveryFee || 0}</TableCell>
+                    </TableRow>
+                    <TableRow
+                      className="table_body"
+                      key={"table_summary_row1"}
+                      sx={{
+                        "&:last-child td, &:last-child th": { border: 0 },
+                      }}
+                    >
+                      <TableCell>Delivery Tip</TableCell>
+                      <TableCell>{orderDetails.tip || 0}</TableCell>
+                    </TableRow>
+                    <TableRow
+                      className="table_body"
+                      key={"table_summary_row1"}
+                      sx={{
+                        "&:last-child td, &:last-child th": { border: 0 },
+                      }}
+                    >
+                      <TableCell>Order Total</TableCell>
+                      <TableCell>{orderDetails.total || 0}</TableCell>
+                    </TableRow>
+                    <TableRow
+                      className="table_body"
+                      key={"table_summary_row1"}
+                      sx={{
+                        "&:last-child td, &:last-child th": { border: 0 },
+                      }}
+                    >
+                      <TableCell>Split Total</TableCell>
+                      <TableCell>{getTotalGroupsContribution() || 0}</TableCell>
+                    </TableRow>
+                    {orderDetails.total - getTotalGroupsContribution() > 0 ? (
+                      <TableRow
+                        className="table_body"
+                        key={"table_summary_row1"}
+                        sx={{
+                          "&:last-child td, &:last-child th": { border: 0 },
+                        }}
+                      >
+                        <TableCell>Remaining</TableCell>
+                        <TableCell sx={{ fontWeight: "bold" }}>
+                          {(
+                            orderDetails.total - getTotalGroupsContribution()
+                          ).toFixed(4)}
+                        </TableCell>
+                      </TableRow>
+                    ) : null}
+                  </TableBody>
+                </Table>
+              </TableContainer>
             </CardContent>
           </Card>
-        </Grid>
-        <Grid xs={12} item>
           {Object.keys(groups).map((groupName) => {
             return (
               <Card
