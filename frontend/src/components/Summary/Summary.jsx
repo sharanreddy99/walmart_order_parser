@@ -33,7 +33,7 @@ const Summary = ({ orderDetails, groups }) => {
 
   return (
     <Grid container alignItems="stretch">
-      <Grid item style={{ display: "flex" }} xs={4}>
+      <Grid item style={{ display: "flex" }} xs={12} md={4}>
         <Card
           sx={{
             float: "left",
@@ -148,7 +148,7 @@ const Summary = ({ orderDetails, groups }) => {
       </Grid>
       {Object.keys(groups).map((groupName) => {
         return (
-          <Grid key={groupName} xs={4} sx={{ display: "flex" }}>
+          <Grid key={groupName} xs={12} md={4} sx={{ display: "flex" }}>
             <Card
               sx={{
                 float: "left",
