@@ -4,9 +4,6 @@ import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 const FileUpload = ({ handleUpload, handleFileChange, selectedFile }) => {
   return (
     <Paper elevation={3} style={{ padding: 20, marginBottom: "10px" }}>
-      <Typography variant="h5" sx={{ marginBottom: "10px" }}>
-        Upload Document
-      </Typography>
       <input
         type="file"
         accept=".jpg, .jpeg, .png, .pdf" // Define the allowed file types
@@ -21,15 +18,26 @@ const FileUpload = ({ handleUpload, handleFileChange, selectedFile }) => {
           color="primary"
           component="span"
           startIcon={<CloudUploadIcon />}
+          size="large"
+          sx={{
+            width: "50%",
+            backgroundColor: "#002984",
+            "&:hover": { backgroundColor: "#002964" },
+          }}
         >
-          Select File
+          Select Walmart Order
         </Button>
         <Button
           variant="contained"
-          color="primary"
           onClick={handleUpload}
           disabled={!selectedFile}
           style={{ float: "right" }}
+          size="large"
+          sx={{
+            width: "48%",
+            backgroundColor: "#002984",
+            "&:hover": { backgroundColor: "#002964" },
+          }}
         >
           Upload
         </Button>

@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from "react";
 import "./DragDrop.css";
-import { Box, Button, Container, Grid, IconButton } from "@mui/material";
+import {
+  Box,
+  Button,
+  Container,
+  Grid,
+  IconButton,
+  Typography,
+} from "@mui/material";
 import ClearIcon from "@mui/icons-material/Clear";
 
 const DragDrop = ({ groups, setGroups, orderDetails, setOrderDetails }) => {
@@ -76,7 +83,16 @@ const DragDrop = ({ groups, setGroups, orderDetails, setOrderDetails }) => {
     <Container className="App" maxWidth={false}>
       <Grid container>
         <Grid xs={6} item>
-          <b style={{ display: "block" }}>Orders List</b>
+          <Typography
+            sx={{
+              fontSize: 18,
+              fontWeight: "bold",
+              textTransform: "uppercase",
+            }}
+            gutterBottom
+          >
+            Orders
+          </Typography>
           <div className="widgets">
             {Object.keys(orderDetails).length > 0
               ? orderDetails.ordersArr.map((order) => {
@@ -97,7 +113,16 @@ const DragDrop = ({ groups, setGroups, orderDetails, setOrderDetails }) => {
           </div>{" "}
         </Grid>
         <Grid xs={6} item>
-          <b style={{ display: "block" }}>Groups</b>
+          <Typography
+            sx={{
+              fontSize: 18,
+              fontWeight: "bold",
+              textTransform: "uppercase",
+            }}
+            gutterBottom
+          >
+            Groups
+          </Typography>
           {Object.keys(groups).map((groupName) => {
             return (
               <div
@@ -110,7 +135,9 @@ const DragDrop = ({ groups, setGroups, orderDetails, setOrderDetails }) => {
                 onDragOver={handleDragOver}
               >
                 <h4>
-                  <b>{groupName}</b>
+                  <b style={{ fontWeight: "bold", textTransform: "uppercase" }}>
+                    {groupName}
+                  </b>
                   <Button
                     variant="contained"
                     color="error"
@@ -129,9 +156,8 @@ const DragDrop = ({ groups, setGroups, orderDetails, setOrderDetails }) => {
                     return (
                       <Button
                         variant="contained"
-                        color="primary"
                         component="span"
-                        sx={{ margin: "0.5%" }}
+                        className="groupWidget"
                         startIcon={<ClearIcon />}
                         key={groupName + "/" + index}
                         onClick={() => {

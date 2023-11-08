@@ -45,48 +45,66 @@ const Summary = ({ orderDetails, groups }) => {
           >
             <CardContent>
               <Typography
-                sx={{ fontSize: 14 }}
-                color="text.secondary"
+                sx={{
+                  fontSize: 14,
+
+                  textTransform: "uppercase",
+                }}
                 gutterBottom
               >
                 Sub Total (Excluding all taxes and fees): $
                 {orderDetails.subTotal}
               </Typography>
               <Typography
-                sx={{ fontSize: 14 }}
-                color="text.secondary"
+                sx={{
+                  fontSize: 14,
+
+                  textTransform: "uppercase",
+                }}
                 gutterBottom
               >
                 Tax: ${orderDetails.tax}
               </Typography>
 
               <Typography
-                sx={{ fontSize: 14 }}
-                color="text.secondary"
+                sx={{
+                  fontSize: 14,
+
+                  textTransform: "uppercase",
+                }}
                 gutterBottom
               >
                 Delivery Fee: ${orderDetails.deliveryFee}
               </Typography>
 
               <Typography
-                sx={{ fontSize: 14 }}
-                color="text.secondary"
+                sx={{
+                  fontSize: 14,
+
+                  textTransform: "uppercase",
+                }}
                 gutterBottom
               >
                 Delivery Tip: ${orderDetails.tip}
               </Typography>
 
               <Typography
-                sx={{ fontSize: 14 }}
-                color="text.secondary"
+                sx={{
+                  fontSize: 14,
+
+                  textTransform: "uppercase",
+                }}
                 gutterBottom
               >
                 Total: ${orderDetails.total}
               </Typography>
 
               <Typography
-                sx={{ fontSize: 14 }}
-                color="text.secondary"
+                sx={{
+                  fontSize: 14,
+
+                  textTransform: "uppercase",
+                }}
                 gutterBottom
               >
                 All Groups Sum: ${getTotalGroupsContribution()}
@@ -102,14 +120,16 @@ const Summary = ({ orderDetails, groups }) => {
                   float: "left",
                   margin: "1%",
                   maxWidth: 460,
-                  border: "1px solid black",
                 }}
                 key={groupName}
               >
                 <CardContent>
                   <Typography
-                    sx={{ fontSize: 14 }}
-                    color="text.secondary"
+                    sx={{
+                      fontSize: 14,
+                      fontWeight: "bold",
+                      textTransform: "uppercase",
+                    }}
                     gutterBottom
                   >
                     {groupName}
@@ -117,16 +137,25 @@ const Summary = ({ orderDetails, groups }) => {
                   <TableContainer component={Paper}>
                     <Table sx={{ maxWidth: 450 }} aria-label="simple table">
                       <TableHead>
-                        <TableRow>
-                          <TableCell>Order Name</TableCell>
-                          <TableCell>Status</TableCell>
-                          <TableCell>Quanitity</TableCell>
-                          <TableCell>Price</TableCell>
+                        <TableRow className="table_header">
+                          <TableCell className="table_header_cell">
+                            Order Name
+                          </TableCell>
+                          <TableCell className="table_header_cell">
+                            Status
+                          </TableCell>
+                          <TableCell className="table_header_cell">
+                            Quanitity
+                          </TableCell>
+                          <TableCell className="table_header_cell">
+                            Price
+                          </TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
                         {groups[groupName].map((row) => (
                           <TableRow
+                            className="table_body"
                             key={row.name}
                             sx={{
                               "&:last-child td, &:last-child th": { border: 0 },
@@ -140,17 +169,26 @@ const Summary = ({ orderDetails, groups }) => {
                         ))}
                         <TableRow
                           key={groupName + ": Total"}
+                          className="table_body"
                           sx={{
                             "&:last-child td, &:last-child th": { border: 0 },
                           }}
                         >
-                          <TableCell>Total</TableCell>
-                          <TableCell>-</TableCell>
-                          <TableCell>-</TableCell>
-                          <TableCell>
-                            {groups[groupName].reduce((a, b) => {
-                              return a + b["price"];
-                            }, 0)}
+                          <TableCell className="table_body_last_row">
+                            Total
+                          </TableCell>
+                          <TableCell className="table_body_last_row">
+                            -
+                          </TableCell>
+                          <TableCell className="table_body_last_row">
+                            -
+                          </TableCell>
+                          <TableCell className="table_body_last_row">
+                            {groups[groupName]
+                              .reduce((a, b) => {
+                                return a + b["price"];
+                              }, 0)
+                              .toFixed(4)}
                           </TableCell>
                         </TableRow>
                       </TableBody>

@@ -31,6 +31,8 @@ const App = () => {
         }
       );
 
+      setSelectedFile("");
+
       setGroups(
         Object.keys(groups).reduce((obj, key) => {
           obj[key] = [];
@@ -49,6 +51,7 @@ const App = () => {
         handleUpload={handleUpload}
         handleFileChange={handleFileChange}
         selectedFile={selectedFile}
+        key={selectedFile}
       />
 
       <GroupCreate groups={groups} setGroups={setGroups} />

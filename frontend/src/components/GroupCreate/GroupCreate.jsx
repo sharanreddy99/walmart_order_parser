@@ -20,18 +20,26 @@ const GroupCreate = ({ groups, setGroups }) => {
         onChange={(e) => {
           setName(e.target.value);
         }}
-        placeholder="Enter group name for dragging the orders"
+        placeholder="Create groups to group individual order items"
       />
 
       <Button
         variant="contained"
         color="primary"
         onClick={(e) => {
-          setGroups({ ...groups, [name]: [] });
-          setName("");
-          addToLocalStorage(name);
+          if (name != "") {
+            setGroups({ ...groups, [name]: [] });
+            setName("");
+            addToLocalStorage(name);
+          }
         }}
-        style={{ float: "right" }}
+        size="large"
+        sx={{
+          float: "right",
+          width: "48%",
+          backgroundColor: "#002984",
+          "&:hover": { backgroundColor: "#002964" },
+        }}
       >
         Add Group
       </Button>

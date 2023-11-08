@@ -7,3 +7,31 @@
     rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
   padding: 1%;
 }
+
+.table_header {
+  background-color: #000294;
+}
+
+.table_header_cell {
+  font-weight: bold !important;
+}
+
+.table_body:last-child {
+  background-color: rgb(221, 221, 221) !important;
+}
+
+.table_body_last_row {
+  font-weight: bold !important;
+}
+
+.table_body:nth-child(odd) {
+  background-color: #f8f8f8;
+}
+
+.table_body:nth-child(even) {
+  background-color: #ffffff;
+}
+
+.table_header_cell {
+  color: white !important;
+}
