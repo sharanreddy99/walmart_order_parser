@@ -44,6 +44,7 @@ def upload_folder():
                 obj.status = resultGroup[1]
                 obj.quantity = float(resultGroup[2])
                 obj.price = float(resultGroup[3])
+                obj.perItemCost = obj.price/obj.quantity
                 objectArr.append(obj)
                 
             result = re.search(r"order# ([\d-]+)", input_string, re.IGNORECASE)

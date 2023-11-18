@@ -76,7 +76,7 @@ const Summary = ({ orderDetails, groups }) => {
                   </TableRow>
                   <TableRow
                     className="table_body"
-                    key={"table_summary_row1"}
+                    key={"table_summary_row2"}
                     sx={{
                       "&:last-child td, &:last-child th": { border: 0 },
                     }}
@@ -86,7 +86,7 @@ const Summary = ({ orderDetails, groups }) => {
                   </TableRow>
                   <TableRow
                     className="table_body"
-                    key={"table_summary_row1"}
+                    key={"table_summary_row3"}
                     sx={{
                       "&:last-child td, &:last-child th": { border: 0 },
                     }}
@@ -96,7 +96,7 @@ const Summary = ({ orderDetails, groups }) => {
                   </TableRow>
                   <TableRow
                     className="table_body"
-                    key={"table_summary_row1"}
+                    key={"table_summary_row4"}
                     sx={{
                       "&:last-child td, &:last-child th": { border: 0 },
                     }}
@@ -106,7 +106,7 @@ const Summary = ({ orderDetails, groups }) => {
                   </TableRow>
                   <TableRow
                     className="table_body"
-                    key={"table_summary_row1"}
+                    key={"table_summary_row5"}
                     sx={{
                       "&:last-child td, &:last-child th": { border: 0 },
                     }}
@@ -116,7 +116,7 @@ const Summary = ({ orderDetails, groups }) => {
                   </TableRow>
                   <TableRow
                     className="table_body"
-                    key={"table_summary_row1"}
+                    key={"table_summary_row6"}
                     sx={{
                       "&:last-child td, &:last-child th": { border: 0 },
                     }}
@@ -126,7 +126,7 @@ const Summary = ({ orderDetails, groups }) => {
                   </TableRow>
                   <TableRow
                     className="table_body"
-                    key={"table_summary_row1"}
+                    key={"table_summary_row7"}
                     sx={{
                       "&:last-child td, &:last-child th": { border: 0 },
                     }}
@@ -137,7 +137,7 @@ const Summary = ({ orderDetails, groups }) => {
                   {orderDetails.total - getTotalGroupsContribution() > 0 ? (
                     <TableRow
                       className="table_body"
-                      key={"table_summary_row1"}
+                      key={"table_summary_row8"}
                       sx={{
                         "&:last-child td, &:last-child th": { border: 0 },
                       }}

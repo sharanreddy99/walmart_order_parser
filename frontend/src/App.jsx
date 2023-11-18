@@ -4,6 +4,7 @@ import FileUpload from "./components/FileUpload/FileUpload";
 import DragDrop from "./components/DragDrop/DragDrop";
 import GroupCreate from "./components/GroupCreate/GroupCreate";
 import Summary from "./components/Summary/Summary";
+import { sortByKey } from "./utils";
 
 const App = () => {
   // states
@@ -39,6 +40,8 @@ const App = () => {
           return obj;
         }, {})
       );
+
+      sortByKey(resp.data.ordersArr);
       setOrderDetails(resp.data);
     } else {
       alert("Please choose a file");

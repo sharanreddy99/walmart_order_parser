@@ -9,6 +9,8 @@ import {
   Typography,
 } from "@mui/material";
 import ClearIcon from "@mui/icons-material/Clear";
+import QuantityModal from "../Modal/QuantityModal";
+import { sortByKey } from "../../utils";
 
 const DragDrop = ({ groups, setGroups, orderDetails, setOrderDetails }) => {
   // useEffect
@@ -25,6 +27,11 @@ const DragDrop = ({ groups, setGroups, orderDetails, setOrderDetails }) => {
     }
   }, []);
 
+  const [modal, setModal] = useState({
+    show: false,
+    order: { name: "", quantity: 0, price: 0, status: "", perItemCost: 0 },
+  });
+
   // handlers
   const handleOnDrag = (e, order) => {
     e.dataTransfer.setData("order", JSON.stringify(order));
@@ -32,13 +39,71 @@ const DragDrop = ({ groups, setGroups, orderDetails, setOrderDetails }) => {
 
   const handleOnDrop = (event, groupName) => {
     const order = JSON.parse(event.dataTransfer.getData("order"));
-    setGroups({ ...groups, [groupName]: [...groups[groupName], order] });
+    if (order.quantity <= 1) {
+      postHandleOnDrop(order, groupName);
+      return;
+    }
 
-    const newOrdersArr = orderDetails.ordersArr.filter((row) => {
-      return row.name !== order.name;
+    setModal({ ...modal, show: true, order: order, groupName: groupName });
+  };
+
+  const findUpdateOrReplace = (objArr, obj, key, operation) => {
+    let foundObj = objArr.find((row) => {
+      return row[key] == obj[key];
     });
+    if (operation == "add") {
+      if (foundObj) {
+        foundObj = { ...foundObj };
+        foundObj.quantity += obj.quantity;
+        foundObj.price = foundObj.quantity * foundObj.perItemCost;
+        foundObj.price = parseFloat(foundObj.price.toFixed(4));
+        let filteredObjArr = objArr.filter((row) => row[key] != obj[key]);
+        filteredObjArr.push(foundObj);
+        sortByKey(filteredObjArr);
+        return filteredObjArr;
+      }
 
-    setOrderDetails({ ...orderDetails, ordersArr: newOrdersArr });
+      obj.price = obj.quantity * obj.perItemCost;
+      obj.price = parseFloat(obj.price.toFixed(4));
+      let newObjArr = [...objArr, { ...obj }];
+      sortByKey(newObjArr);
+      return newObjArr;
+    } else {
+      if (foundObj) {
+        foundObj = { ...foundObj };
+        foundObj.quantity -= obj.quantity;
+        foundObj.price = foundObj.quantity * foundObj.perItemCost;
+        foundObj.price = parseFloat(foundObj.price.toFixed(4));
+        let filteredObjArr = objArr.filter((row) => {
+          return row[key] != obj[key];
+        });
+        if (foundObj.quantity > 0) {
+          filteredObjArr.push({ ...foundObj });
+        }
+
+        sortByKey(filteredObjArr);
+        return filteredObjArr;
+      }
+    }
+  };
+
+  const postHandleOnDrop = (order, groupName) => {
+    const updatedGroups = findUpdateOrReplace(
+      groups[groupName],
+      order,
+      "name",
+      "add"
+    );
+    setGroups({ ...groups, [groupName]: updatedGroups });
+
+    const updatedOrders = findUpdateOrReplace(
+      orderDetails.ordersArr,
+      order,
+      "name",
+      "subtract"
+    );
+
+    setOrderDetails({ ...orderDetails, ordersArr: updatedOrders });
   };
 
   const handleDragOver = (e) => {
@@ -47,13 +112,21 @@ const DragDrop = ({ groups, setGroups, orderDetails, setOrderDetails }) => {
 
   const deleteGroupHandler = (groupName) => {
     let removedOrders = [...groups[groupName]];
+    let currentOrdersArr = orderDetails.ordersArr;
     if (Object.keys(orderDetails).length > 0) {
-      removedOrders = [...removedOrders, ...orderDetails.ordersArr];
+      removedOrders.forEach((obj) => {
+        currentOrdersArr = findUpdateOrReplace(
+          currentOrdersArr,
+          obj,
+          "name",
+          "add"
+        );
+      });
     }
 
     setOrderDetails({
       ...orderDetails,
-      ordersArr: removedOrders,
+      ordersArr: currentOrdersArr,
     });
 
     const newGroups = Object.keys(groups)
@@ -67,20 +140,31 @@ const DragDrop = ({ groups, setGroups, orderDetails, setOrderDetails }) => {
   };
 
   const deleteItemHandler = (groupName, order) => {
-    setOrderDetails({
-      ...orderDetails,
-      ordersArr: [...orderDetails["ordersArr"], order],
-    });
-
-    const newGroupItems = groups[groupName].filter(
-      (row) => row.name !== order.name
+    const updatedOrders = findUpdateOrReplace(
+      orderDetails.ordersArr,
+      order,
+      "name",
+      "add"
     );
 
-    setGroups({ ...groups, [groupName]: newGroupItems });
+    setOrderDetails({ ...orderDetails, ordersArr: updatedOrders });
+
+    const updatedGroups = findUpdateOrReplace(
+      groups[groupName],
+      order,
+      "name",
+      "subtract"
+    );
+    setGroups({ ...groups, [groupName]: updatedGroups });
   };
 
   return (
     <Container className="App" maxWidth={false}>
+      <QuantityModal
+        modal={modal}
+        setModal={setModal}
+        onSplitItem={postHandleOnDrop}
+      />
       <Grid container>
         {Object.keys(orderDetails).length == 0 ||
         (Object.keys(orderDetails).length > 0 &&
@@ -108,7 +192,7 @@ const DragDrop = ({ groups, setGroups, orderDetails, setOrderDetails }) => {
                         key={order.name}
                         id={order.name}
                       >
-                        {order.name}
+                        {order.name} | Qty: {order.quantity}
                       </div>
                     );
                   })
@@ -177,7 +261,7 @@ const DragDrop = ({ groups, setGroups, orderDetails, setOrderDetails }) => {
                           deleteItemHandler(groupName, order);
                         }}
                       >
-                        {order.name}
+                        {order.name} | Qty: {order.quantity}
                       </Button>
                     );
                   })}

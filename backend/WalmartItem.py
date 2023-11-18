@@ -6,6 +6,7 @@ class WalmartItem:
         self.status = status
         self.quantity = quantity
         self.price = price
+        self.perItemCost = None
     
     def __str__(self):
         return 'Name: %s | Status: %s | Quantity: %s | Price: %s'%(self.name, self.status, self.quantity, self.price)
