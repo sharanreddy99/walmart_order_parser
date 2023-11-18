@@ -69,8 +69,10 @@ const Summary = ({ orderDetails, groups }) => {
                       "&:last-child td, &:last-child th": { border: 0 },
                     }}
                   >
-                    <TableCell>Savings</TableCell>
-                    <TableCell>-{orderDetails.savings || 0}</TableCell>
+                    <TableCell>
+                      Sub Total (Excluding all taxes and fees)
+                    </TableCell>
+                    <TableCell>{orderDetails.subTotal || 0}</TableCell>
                   </TableRow>
                   <TableRow
                     className="table_body"
@@ -79,10 +81,8 @@ const Summary = ({ orderDetails, groups }) => {
                       "&:last-child td, &:last-child th": { border: 0 },
                     }}
                   >
-                    <TableCell>
-                      Sub Total (Excluding all taxes and fees)
-                    </TableCell>
-                    <TableCell>{orderDetails.subTotal || 0}</TableCell>
+                    <TableCell>Savings</TableCell>
+                    <TableCell>-{orderDetails.savings || 0}</TableCell>
                   </TableRow>
                   <TableRow
                     className="table_body"
