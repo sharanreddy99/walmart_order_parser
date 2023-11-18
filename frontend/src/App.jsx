@@ -9,7 +9,7 @@ import { sortByKey } from "./utils";
 const App = () => {
   // states
   const [selectedFile, setSelectedFile] = useState(null);
-  const [orderDetails, setOrderDetails] = useState({});
+  const [orderDetails, setOrderDetails] = useState({ ordersArr: [] });
   const [groups, setGroups] = useState({});
 
   // Handlers

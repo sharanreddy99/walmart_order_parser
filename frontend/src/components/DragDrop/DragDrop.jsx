@@ -136,6 +136,9 @@ const DragDrop = ({ groups, setGroups, orderDetails, setOrderDetails }) => {
         return obj;
       }, {});
 
+    const groupArr = Object.keys(newGroups);
+    localStorage.setItem("groupNames", JSON.stringify(groupArr));
+
     setGroups(newGroups);
   };
 
@@ -166,9 +169,10 @@ const DragDrop = ({ groups, setGroups, orderDetails, setOrderDetails }) => {
         onSplitItem={postHandleOnDrop}
       />
       <Grid container>
-        {Object.keys(orderDetails).length == 0 ||
-        (Object.keys(orderDetails).length > 0 &&
-          orderDetails.ordersArr.length == 0) ? null : (
+        {orderDetails &&
+        (Object.keys(orderDetails).length == 0 ||
+          (Object.keys(orderDetails).length > 0 &&
+            orderDetails.ordersArr.length == 0)) ? null : (
           <Grid xs={6} item>
             <Typography
               sx={{
