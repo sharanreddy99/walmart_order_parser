@@ -193,7 +193,7 @@ const DragDrop = ({ groups, setGroups, orderDetails, setOrderDetails }) => {
                         draggable
                         onDragStart={(e) => handleOnDrag(e, order)}
                         onDrop={handleOnDrop}
-                        key={order.name}
+                        key={order.name + order.quantity}
                         id={order.name}
                       >
                         {order.name} | Qty: {order.quantity}
