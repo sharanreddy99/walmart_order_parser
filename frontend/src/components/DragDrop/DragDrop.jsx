@@ -47,9 +47,9 @@ const DragDrop = ({ groups, setGroups, orderDetails, setOrderDetails }) => {
     setModal({ ...modal, show: true, order: order, groupName: groupName });
   };
 
-  const findUpdateOrReplace = (objArr, obj, key, operation) => {
+  const findUpdateOrReplace = (objArr, obj, key1, key2, operation) => {
     let foundObj = objArr.find((row) => {
-      return row[key] == obj[key];
+      return row[key1] + row[key2] == obj[key1] + obj[key2];
     });
     if (operation == "add") {
       if (foundObj) {
@@ -57,7 +57,9 @@ const DragDrop = ({ groups, setGroups, orderDetails, setOrderDetails }) => {
         foundObj.quantity += obj.quantity;
         foundObj.price = foundObj.quantity * foundObj.perItemCost;
         foundObj.price = parseFloat(foundObj.price.toFixed(4));
-        let filteredObjArr = objArr.filter((row) => row[key] != obj[key]);
+        let filteredObjArr = objArr.filter(
+          (row) => row[key1] + row[key2] != obj[key1] + obj[key2]
+        );
         filteredObjArr.push(foundObj);
         sortByKey(filteredObjArr);
         return filteredObjArr;
@@ -75,7 +77,7 @@ const DragDrop = ({ groups, setGroups, orderDetails, setOrderDetails }) => {
         foundObj.price = foundObj.quantity * foundObj.perItemCost;
         foundObj.price = parseFloat(foundObj.price.toFixed(4));
         let filteredObjArr = objArr.filter((row) => {
-          return row[key] != obj[key];
+          return row[key1] + row[key2] != obj[key1] + obj[key2];
         });
         if (foundObj.quantity > 0) {
           filteredObjArr.push({ ...foundObj });
@@ -92,6 +94,7 @@ const DragDrop = ({ groups, setGroups, orderDetails, setOrderDetails }) => {
       groups[groupName],
       order,
       "name",
+      "quantity",
       "add"
     );
     setGroups({ ...groups, [groupName]: updatedGroups });
@@ -100,6 +103,7 @@ const DragDrop = ({ groups, setGroups, orderDetails, setOrderDetails }) => {
       orderDetails.ordersArr,
       order,
       "name",
+      "quantity",
       "subtract"
     );
 
@@ -119,6 +123,7 @@ const DragDrop = ({ groups, setGroups, orderDetails, setOrderDetails }) => {
           currentOrdersArr,
           obj,
           "name",
+          "quantity",
           "add"
         );
       });
@@ -147,6 +152,7 @@ const DragDrop = ({ groups, setGroups, orderDetails, setOrderDetails }) => {
       orderDetails.ordersArr,
       order,
       "name",
+      "quantity",
       "add"
     );
 
@@ -156,6 +162,7 @@ const DragDrop = ({ groups, setGroups, orderDetails, setOrderDetails }) => {
       groups[groupName],
       order,
       "name",
+      "quantity",
       "subtract"
     );
     setGroups({ ...groups, [groupName]: updatedGroups });

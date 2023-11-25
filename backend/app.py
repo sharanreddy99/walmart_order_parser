@@ -45,7 +45,12 @@ def upload_folder():
                 obj.quantity = float(resultGroup[2])
                 obj.price = float(resultGroup[3])
                 obj.perItemCost = obj.price/obj.quantity
+                if obj.status == 'Unavailable':
+                    obj.price = 0
+                    obj.perItemCost = 0
+                    
                 objectArr.append(obj)
+
                 
             result = re.search(r"order# ([\d-]+)", input_string, re.IGNORECASE)
             if result != None:
@@ -91,5 +96,7 @@ def upload_folder():
         obj.total = object.get('total', 0)
         obj.tip = object.get('driverTip', 0)
         obj.ordersArr = objectArr
+    
+    print()
         
     return obj.toJSON()
