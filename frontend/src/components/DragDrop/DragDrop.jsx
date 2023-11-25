@@ -90,7 +90,6 @@ const DragDrop = ({ groups, setGroups, orderDetails, setOrderDetails }) => {
   };
 
   const postHandleOnDrop = (order, groupName) => {
-    debugger;
     const updatedGroups = findUpdateOrReplace(
       groups[groupName],
       order,

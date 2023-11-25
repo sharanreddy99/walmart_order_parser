@@ -199,7 +199,7 @@ const Summary = ({ orderDetails, groups }) => {
                       {groups[groupName].map((row) => (
                         <TableRow
                           className="table_body"
-                          key={row.name}
+                          key={row.idx}
                           sx={{
                             "&:last-child td, &:last-child th": { border: 0 },
                           }}
