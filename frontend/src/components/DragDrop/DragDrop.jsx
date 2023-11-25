@@ -90,11 +90,12 @@ const DragDrop = ({ groups, setGroups, orderDetails, setOrderDetails }) => {
   };
 
   const postHandleOnDrop = (order, groupName) => {
+    debugger;
     const updatedGroups = findUpdateOrReplace(
       groups[groupName],
       order,
       "name",
-      "quantity",
+      "idx",
       "add"
     );
     setGroups({ ...groups, [groupName]: updatedGroups });
@@ -103,7 +104,7 @@ const DragDrop = ({ groups, setGroups, orderDetails, setOrderDetails }) => {
       orderDetails.ordersArr,
       order,
       "name",
-      "quantity",
+      "idx",
       "subtract"
     );
 
@@ -123,7 +124,7 @@ const DragDrop = ({ groups, setGroups, orderDetails, setOrderDetails }) => {
           currentOrdersArr,
           obj,
           "name",
-          "quantity",
+          "idx",
           "add"
         );
       });
@@ -152,7 +153,7 @@ const DragDrop = ({ groups, setGroups, orderDetails, setOrderDetails }) => {
       orderDetails.ordersArr,
       order,
       "name",
-      "quantity",
+      "idx",
       "add"
     );
 
@@ -162,7 +163,7 @@ const DragDrop = ({ groups, setGroups, orderDetails, setOrderDetails }) => {
       groups[groupName],
       order,
       "name",
-      "quantity",
+      "idx",
       "subtract"
     );
     setGroups({ ...groups, [groupName]: updatedGroups });
@@ -200,8 +201,8 @@ const DragDrop = ({ groups, setGroups, orderDetails, setOrderDetails }) => {
                         draggable
                         onDragStart={(e) => handleOnDrag(e, order)}
                         onDrop={handleOnDrop}
-                        key={order.name + order.quantity}
-                        id={order.name}
+                        key={order.idx}
+                        id={order.idx}
                       >
                         {order.name} | Qty: {order.quantity}
                       </div>

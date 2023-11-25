@@ -1,7 +1,9 @@
 import json
+from uuid import uuid4 as v4
 
 class WalmartItem:
     def __init__(self, name, status=None, quantity=None, price=None):
+        self.idx = v4().hex[:6].upper()
         self.name = name
         self.status = status
         self.quantity = quantity
