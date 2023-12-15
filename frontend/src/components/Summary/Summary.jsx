@@ -1,8 +1,6 @@
-import * as React from "react";
+import {useState, useEffect}  from "react";
 import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
-import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import {
   Container,
@@ -19,6 +17,21 @@ import {
 import "./Summary.css";
 
 const Summary = ({ orderDetails, groups }) => {
+  // States
+  const [personName, setPersonName] = useState([])
+  useEffect(()=>{
+    const personNameObj = {};
+    Object.keys(groups).forEach((groupName)=>{
+      const personArr = groupName.split(",");
+      for(let i=0;i<personArr.length;i++){
+        personNameObj[personArr[i].toLowerCase()] = 0;
+      }
+    })
+
+    setPersonName(Object.keys(personNameObj))
+  }, [groups])
+
+  // Handlers
   const getTotalGroupsContribution = () => {
     let totalPrice = 0;
     const groupNames = Object.keys(groups);
@@ -30,6 +43,18 @@ const Summary = ({ orderDetails, groups }) => {
 
     return totalPrice.toFixed(4);
   };
+
+  const getIndividualContribution = (person)=>{
+    let totalIndividualCount = 0;
+    Object.keys(groups).filter((group)=> group.toLowerCase().includes(person)).forEach((group)=>{
+      const totalCount = group.split(",").length
+      for(let i=0;i<groups[group].length;i++){
+        totalIndividualCount += groups[group][i].price/totalCount;
+      }
+    })
+
+    return totalIndividualCount.toFixed(4);
+  }
 
   return (
     <Grid container alignItems="stretch">
@@ -155,6 +180,59 @@ const Summary = ({ orderDetails, groups }) => {
             </TableContainer>
           </CardContent>
         </Card>
+      </Grid>
+      <Grid key={"individualContributions"} xs={12} md={4} sx={{ display: "flex" }}>
+       <Card
+        sx={{
+          float: "left",
+          margin: "1%",
+          width: "100%",
+        }}
+      >
+      <CardContent>
+        <Typography
+                  sx={{
+                    fontSize: 14,
+                    fontWeight: "bold",
+                    textTransform: "uppercase",
+                  }}
+                  gutterBottom
+                >
+                  Individual Shares
+                </Typography>
+      <TableContainer component={Paper}>
+                  <Table sx={{ width: "100%" }} aria-label="simple table">
+                    <TableHead>
+                      <TableRow className="table_header">
+                        <TableCell className="table_header_cell">
+                          Person Name
+                        </TableCell>
+                        <TableCell className="table_header_cell">
+                          Total Share
+                        </TableCell>
+                        
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      { personName.map((person)=>(
+                        <TableRow
+                          className="table_body"
+                          key={person}
+                          sx={{
+                            "&:last-child td, &:last-child th": { border: 0 },
+                          }}
+                        >
+                          <TableCell><b>{person.toUpperCase()}</b></TableCell>
+                          <TableCell>{getIndividualContribution(person.toLowerCase())}</TableCell>
+                        </TableRow>
+                      ))}
+                      
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+
+        </CardContent>
+      </Card>
       </Grid>
       {Object.keys(groups).map((groupName) => {
         return (

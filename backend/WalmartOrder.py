@@ -1,5 +1,7 @@
 import json
 
+from WalmartItem import WalmartItem
+
 class WalmartOrder:
     def __init__(self, orderName):
         self.orderName = orderName
@@ -31,11 +33,17 @@ class WalmartOrder:
     
     def clearUnavailableItemPrices(self):
         for i in range(len(self.ordersArr)):
-            if self.ordersArr[i].status == 'Unavailable':
+            if self.ordersArr[i].status.lower() == 'unavailable':
                 self.ordersArr[i].price = 0
 
+    def createTaxItem(self):
+        if float(self.tax) > 0:
+            obj = WalmartItem('Tax', 'Shopped', 1, float(self.tax))
+            obj.perItemCost = obj.price
+            self.ordersArr.append(obj)
 
     def toJSON(self):
         self.clearUnavailableItemPrices()
+        self.createTaxItem()
         return json.dumps(self, default=lambda o: o.__dict__, 
             sort_keys=True, indent=4)
