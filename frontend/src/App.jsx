@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import FileUpload from "./components/FileUpload/FileUpload";
 import DragDrop from "./components/DragDrop/DragDrop";
@@ -15,6 +15,13 @@ const App = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [orderDetails, setOrderDetails] = useState({ ordersArr: [] });
   const [groups, setGroups] = useState({});
+
+  // effects
+  useEffect(() => {
+    if (orderDetails.ordersArr.length == 0) {
+      postProcessedGroupWiseOrders();
+    }
+  }, [JSON.stringify(orderDetails)]);
 
   // Handlers
   const handleFileChange = (e) => {
@@ -50,6 +57,23 @@ const App = () => {
     } else {
       alert("Please choose a file");
     }
+  };
+
+  const postProcessedGroupWiseOrders = async () => {
+    await axios.post(
+      import.meta.env.VITE_WALMART_PARSER_BACKEND_URL +
+        "/upload_processed_order",
+      {
+        ...groups,
+        orderID: orderDetails.orderName,
+        orderDate: orderDetails.date,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
   };
 
   return (

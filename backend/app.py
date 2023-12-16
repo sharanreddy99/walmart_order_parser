@@ -3,7 +3,9 @@ import sys
 from flask import request
 
 from backend.helpers.helpers import (
+    add_or_update_walmart_groups,
     add_or_update_walmart_order,
+    add_or_update_walmart_order_processed_items,
     add_or_update_walmart_order_raw_items,
 )
 from .WalmartItem.WalmartItem import WalmartItem
@@ -139,7 +141,7 @@ def upload_order():
 
     add_or_update_walmart_order(obj.orderName, orderDate)
     add_or_update_walmart_order_raw_items(obj.orderName, obj.ordersArr)
-    
+
     resp = obj.toJSON(includeTax=True)
 
     return resp
@@ -148,5 +150,17 @@ def upload_order():
 @app.route("/upload_processed_order", methods=["POST"])
 @cross_origin(supports_credentials=True)
 def upload_processed_order():
-    print(request.form, file=sys.stderr)
-    return {}
+    reqdata = request.get_json()
+    if "orderID" not in reqdata:
+        return {"message": "Invalid Order"}
+
+    orderID = reqdata["orderID"]
+    orderDate = reqdata["orderDate"]
+    del reqdata["orderID"]
+    del reqdata["orderDate"]
+
+    for groupName in reqdata.keys():
+        groupID = add_or_update_walmart_groups(orderID, groupName)
+        add_or_update_walmart_order_processed_items(groupID, reqdata[groupName])
+
+    return {"message": "successfully processed items"}
