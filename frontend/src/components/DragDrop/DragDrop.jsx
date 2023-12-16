@@ -208,7 +208,7 @@ const DragDrop = ({ groups, setGroups, orderDetails, setOrderDetails }) => {
                     );
                   })
                 : null}
-            </div>{" "}
+            </div>
           </Grid>
         )}
         <Grid
