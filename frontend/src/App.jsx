@@ -4,6 +4,10 @@ import FileUpload from "./components/FileUpload/FileUpload";
 import DragDrop from "./components/DragDrop/DragDrop";
 import GroupCreate from "./components/GroupCreate/GroupCreate";
 import Summary from "./components/Summary/Summary";
+import FetchPastSplit from "./components/FetchPastSplit/FetchPastSplit";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
+
 import { sortByKey } from "./utils";
 
 const App = () => {
@@ -50,22 +54,29 @@ const App = () => {
 
   return (
     <div className="root">
-      <FileUpload
-        handleUpload={handleUpload}
-        handleFileChange={handleFileChange}
-        selectedFile={selectedFile}
-        key={selectedFile}
-      />
+      <LocalizationProvider dateAdapter={AdapterMoment}>
+        <FetchPastSplit
+          setGroups={setGroups}
+          setOrderDetails={setOrderDetails}
+        />
 
-      <GroupCreate groups={groups} setGroups={setGroups} />
-      <Summary groups={groups} orderDetails={orderDetails} />
+        <FileUpload
+          handleUpload={handleUpload}
+          handleFileChange={handleFileChange}
+          selectedFile={selectedFile}
+          key={selectedFile}
+        />
 
-      <DragDrop
-        groups={groups}
-        setGroups={setGroups}
-        orderDetails={orderDetails}
-        setOrderDetails={setOrderDetails}
-      />
+        <GroupCreate groups={groups} setGroups={setGroups} />
+        <Summary groups={groups} orderDetails={orderDetails} />
+
+        <DragDrop
+          groups={groups}
+          setGroups={setGroups}
+          orderDetails={orderDetails}
+          setOrderDetails={setOrderDetails}
+        />
+      </LocalizationProvider>
     </div>
   );
 };

@@ -1,10 +1,11 @@
 import json
 
-from WalmartItem import WalmartItem
+from backend.WalmartItem.WalmartItem import WalmartItem
 
 class WalmartOrder:
     def __init__(self, orderName):
         self.orderName = orderName
+        self.date = None
         self.ordersArr = []
         self.subTotal = 0
         self.total = 0
@@ -42,8 +43,9 @@ class WalmartOrder:
             obj.perItemCost = obj.price
             self.ordersArr.append(obj)
 
-    def toJSON(self):
+    def toJSON(self, includeTax = False):
         self.clearUnavailableItemPrices()
-        self.createTaxItem()
+        if includeTax:
+            self.createTaxItem()
         return json.dumps(self, default=lambda o: o.__dict__, 
             sort_keys=True, indent=4)
