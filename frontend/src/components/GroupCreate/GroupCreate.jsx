@@ -20,7 +20,7 @@ const GroupCreate = ({ groups, setGroups }) => {
         onChange={(e) => {
           setName(e.target.value);
         }}
-        placeholder="Create groups to group individual order items"
+        placeholder="Comma separated names to get individual contributions"
       />
 
       <Button
