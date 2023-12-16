@@ -4,6 +4,12 @@ from backend import db
 class WalmartOrder(db.Model):
     orderID = db.Column(db.String(50), primary_key=True, nullable=False)
     date = db.Column(db.Date, nullable=False)
+    deliveryFee = db.Column(db.Float, nullable=False)
+    savings = db.Column(db.Float, nullable=False)
+    subTotal = db.Column(db.Float, nullable=False)
+    tax = db.Column(db.Float, nullable=False)
+    tip = db.Column(db.Float, nullable=False)
+    total = db.Column(db.Float, nullable=False)
 
 
 class WalmartOrderRawItems(db.Model):

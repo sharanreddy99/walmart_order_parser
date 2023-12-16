@@ -2,13 +2,25 @@ import { Button, Paper, TextField } from "@mui/material";
 import { useState } from "react";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import moment from "moment";
+import axios from "axios";
 
 const FetchPastSplit = ({ setOrderDetails, setGroups }) => {
   const [orderId, setOrderId] = useState("");
   const [orderDate, setOrderDate] = useState(moment());
 
   // Handlers
-  const fetchPastProcessedOrder = () => {};
+  const fetchPastProcessedOrder = async () => {
+    const resp = await axios.get(
+      `${
+        import.meta.env.VITE_WALMART_PARSER_BACKEND_URL
+      }/fetch_processed_order?orderID=${orderId}&orderDate=${moment(
+        orderDate
+      ).format("YYYY-MM-DD")}`
+    );
+
+    setGroups(resp.data.groupsInfo);
+    setOrderDetails({ ...resp.data, ordersArr: [] });
+  };
 
   return (
     <Paper elevation={3} style={{ padding: 20, marginBottom: "10px" }}>

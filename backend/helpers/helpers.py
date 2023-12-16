@@ -1,10 +1,20 @@
 import sys
+from backend.WalmartItem.WalmartItem import WalmartItem
 from backend.entities.entities import *
 from backend import db
 from sqlalchemy import update, select
 
 
-def add_or_update_walmart_order(orderID, date):
+def add_or_update_walmart_order(
+    orderID,
+    date,
+    subTotal,
+    savings,
+    total,
+    deliveryFee,
+    tax,
+    tip,
+):
     existing_order = db.session.execute(
         db.select(WalmartOrder).filter(
             (WalmartOrder.orderID == orderID), (WalmartOrder.date == date)
@@ -12,7 +22,16 @@ def add_or_update_walmart_order(orderID, date):
     ).fetchall()
 
     if len(existing_order) == 0:
-        new_order = WalmartOrder(orderID=orderID, date=date)
+        new_order = WalmartOrder(
+            orderID=orderID,
+            date=date,
+            subTotal=subTotal,
+            total=total,
+            savings=savings,
+            deliveryFee=deliveryFee,
+            tax=tax,
+            tip=tip,
+        )
         db.session.add(new_order)
         db.session.commit()
 
@@ -96,3 +115,59 @@ def add_or_update_walmart_order_processed_items(groupID, ordersArr):
         db.session.add(walmartProcessedItem)
 
     db.session.commit()
+
+
+def fetch_processed_order_details(orderID, orderDate):
+    stmt1 = select(WalmartOrder).where(
+        WalmartOrder.orderID == orderID, WalmartOrder.date == orderDate
+    )
+
+    result = db.session.execute(stmt1).fetchone()
+    if result is None:
+        raise Exception()
+
+    result = result[0]
+
+    resultObject = {
+        "orderName": result.orderID,
+        "date": result.date,
+        "subTotal": result.subTotal,
+        "savings": result.savings,
+        "total": result.total,
+        "deliveryFee": result.deliveryFee,
+        "tax": result.tax,
+        "tip": result.tip,
+    }
+
+    stmt = (
+        select(
+            WalmartOrder.orderID,
+            WalmartOrderGroups.name,
+            WalmartOrderProcessedItems.name,
+            WalmartOrderProcessedItems.status,
+            WalmartOrderProcessedItems.quantity,
+            WalmartOrderProcessedItems.price,
+            WalmartOrderProcessedItems.per_item_cost,
+        )
+        .join(
+            WalmartOrderGroups,
+            WalmartOrder.orderID == WalmartOrderGroups.walmart_order_id,
+        )
+        .join(
+            WalmartOrderProcessedItems,
+            WalmartOrderGroups.ID == WalmartOrderProcessedItems.walmart_order_group_id,
+        )
+        .where(WalmartOrder.orderID == orderID, WalmartOrder.date == orderDate)
+    )
+
+    processedOrders = db.session.execute(stmt).all()
+    groupsInfo = {}
+
+    for row in processedOrders:
+        groupsInfo[row[1]] = groupsInfo.get(row[1], [])
+        groupsInfo[row[1]].append(
+            WalmartItem(row[2], row[3], row[4], row[5], row[6]).toJSONObject()
+        )
+
+    resultObject["groupsInfo"] = groupsInfo
+    return resultObject

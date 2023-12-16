@@ -7,6 +7,7 @@ from backend.helpers.helpers import (
     add_or_update_walmart_order,
     add_or_update_walmart_order_processed_items,
     add_or_update_walmart_order_raw_items,
+    fetch_processed_order_details,
 )
 from .WalmartItem.WalmartItem import WalmartItem
 from .WalmartOrder.WalmartOrder import WalmartOrder
@@ -139,7 +140,16 @@ def upload_order():
         obj.tip = object.get("driverTip", 0)
         obj.ordersArr = objectArr
 
-    add_or_update_walmart_order(obj.orderName, orderDate)
+    add_or_update_walmart_order(
+        orderID=obj.orderName,
+        date=orderDate,
+        subTotal=obj.subTotal,
+        savings=obj.savings,
+        total=obj.total,
+        deliveryFee=obj.deliveryFee,
+        tax=obj.tax,
+        tip=obj.tip,
+    )
     add_or_update_walmart_order_raw_items(obj.orderName, obj.ordersArr)
 
     resp = obj.toJSON(includeTax=True)
@@ -164,3 +174,13 @@ def upload_processed_order():
         add_or_update_walmart_order_processed_items(groupID, reqdata[groupName])
 
     return {"message": "successfully processed items"}
+
+
+@app.route("/fetch_processed_order", methods=["GET"])
+@cross_origin(supports_credentials=True)
+def fetch_processed_order():
+    orderID = request.args.get("orderID")
+    orderDate = request.args.get("orderDate")
+
+    processedOrders = fetch_processed_order_details(orderID, orderDate)
+    return processedOrders
