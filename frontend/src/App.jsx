@@ -9,14 +9,36 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 
 import { sortByKey } from "./utils";
+import OnboardingWizard from "./components/OnboardingWizardBox/OnboardingWizard";
+import {
+  getCurrentOnboardingConfig,
+  setCurrentOnboardingConfig,
+} from "./config/onboarding";
 
 const App = () => {
   // states
   const [selectedFile, setSelectedFile] = useState(null);
   const [orderDetails, setOrderDetails] = useState({ ordersArr: [] });
   const [groups, setGroups] = useState({});
+  const [onboardingData, setOnboardingData] = useState({
+    data: null,
+    stepNumber: 0,
+    isShown: false,
+  });
 
   // effects
+  useEffect(() => {
+    if (localStorage.getItem("onboardingStep") == null) {
+      setCurrentOnboardingConfig(0, setOnboardingData);
+    } else if (localStorage.getItem("onboardingStep") != "3") {
+      setCurrentOnboardingConfig(
+        parseInt(localStorage.getItem("onboardingStep")),
+        setOnboardingData,
+        true
+      );
+    }
+  }, []);
+
   useEffect(() => {
     if (orderDetails.ordersArr.length == 0) {
       postProcessedGroupWiseOrders();
@@ -42,6 +64,8 @@ const App = () => {
           },
         }
       );
+
+      setCurrentOnboardingConfig(1, setOnboardingData);
 
       setSelectedFile("");
 
@@ -79,6 +103,13 @@ const App = () => {
   return (
     <div className="root">
       <LocalizationProvider dateAdapter={AdapterMoment}>
+        {getCurrentOnboardingConfig(onboardingData.stepNumber) != null ? (
+          <OnboardingWizard
+            showModal={onboardingData.isShown}
+            setShowModal={setOnboardingData}
+            {...onboardingData.data}
+          />
+        ) : null}
         <FetchPastSplit
           setGroups={setGroups}
           setOrderDetails={setOrderDetails}
@@ -91,7 +122,11 @@ const App = () => {
           key={selectedFile}
         />
 
-        <GroupCreate groups={groups} setGroups={setGroups} />
+        <GroupCreate
+          groups={groups}
+          setGroups={setGroups}
+          setOnboardingData={setOnboardingData}
+        />
         <Summary groups={groups} orderDetails={orderDetails} />
 
         <DragDrop
@@ -99,6 +134,7 @@ const App = () => {
           setGroups={setGroups}
           orderDetails={orderDetails}
           setOrderDetails={setOrderDetails}
+          setOnboardingData={setOnboardingData}
         />
       </LocalizationProvider>
     </div>

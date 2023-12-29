@@ -96,6 +96,26 @@ const Summary = ({ orderDetails, groups }) => {
                       "&:last-child td, &:last-child th": { border: 0 },
                     }}
                   >
+                    <TableCell>Order Name</TableCell>
+                    <TableCell>{orderDetails.orderName}</TableCell>
+                  </TableRow>
+                  <TableRow
+                    className="table_body"
+                    key={"table_summary_row1"}
+                    sx={{
+                      "&:last-child td, &:last-child th": { border: 0 },
+                    }}
+                  >
+                    <TableCell>Order Date</TableCell>
+                    <TableCell>{orderDetails.date}</TableCell>
+                  </TableRow>
+                  <TableRow
+                    className="table_body"
+                    key={"table_summary_row1"}
+                    sx={{
+                      "&:last-child td, &:last-child th": { border: 0 },
+                    }}
+                  >
                     <TableCell>
                       Sub Total (Excluding all taxes and fees)
                     </TableCell>

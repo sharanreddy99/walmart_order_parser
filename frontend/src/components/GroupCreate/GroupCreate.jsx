@@ -1,8 +1,9 @@
 import { Button, Paper, TextField, Typography } from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { useState } from "react";
+import { setCurrentOnboardingConfig } from "../../config/onboarding";
 
-const GroupCreate = ({ groups, setGroups }) => {
+const GroupCreate = ({ groups, setGroups, setOnboardingData }) => {
   const [name, setName] = useState("");
 
   const addToLocalStorage = (name) => {
@@ -31,6 +32,8 @@ const GroupCreate = ({ groups, setGroups }) => {
             setGroups({ ...groups, [name]: [] });
             setName("");
             addToLocalStorage(name);
+
+            setCurrentOnboardingConfig(2, setOnboardingData);
           }
         }}
         size="large"
