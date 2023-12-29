@@ -14,10 +14,13 @@ const OnboardingWizard = ({ showModal, setShowModal, title, body }) => {
   return (
     <Modal
       open={showModal}
-      onClose={handleClose}
-      sx={{ position: "absolute", top: "30%", left: "30%" }}
+      sx={{
+        position: "absolute",
+        top: "30%",
+        left: "30%",
+      }}
     >
-      <Card sx={{ width: 500 }}>
+      <Card sx={{ width: 500, borderRadius: "7px" }}>
         <CardContent>
           <Typography gutterBottom variant="h6" component="div">
             <b>{title}</b>
