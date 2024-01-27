@@ -12,7 +12,14 @@ import ClearIcon from "@mui/icons-material/Clear";
 import QuantityModal from "../Modal/QuantityModal";
 import { sortByKey } from "../../utils";
 
-const DragDrop = ({ groups, setGroups, orderDetails, setOrderDetails }) => {
+const DragDrop = ({
+  groups,
+  setGroups,
+  orderDetails,
+  setOrderDetails,
+  setCurrentOnboardingConfig,
+  setOnboardingData,
+}) => {
   // useEffect
   useEffect(() => {
     const groupNames = localStorage.getItem("groupNames");
@@ -41,9 +48,11 @@ const DragDrop = ({ groups, setGroups, orderDetails, setOrderDetails }) => {
     const order = JSON.parse(event.dataTransfer.getData("order"));
     if (order.quantity <= 1) {
       postHandleOnDrop(order, groupName);
+      setCurrentOnboardingConfig(3, setOnboardingData);
       return;
     }
 
+    setCurrentOnboardingConfig(3, setOnboardingData);
     setModal({ ...modal, show: true, order: order, groupName: groupName });
   };
 

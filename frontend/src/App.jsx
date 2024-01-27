@@ -134,6 +134,7 @@ const App = () => {
           setGroups={setGroups}
           orderDetails={orderDetails}
           setOrderDetails={setOrderDetails}
+          setCurrentOnboardingConfig={setCurrentOnboardingConfig}
           setOnboardingData={setOnboardingData}
         />
       </LocalizationProvider>
