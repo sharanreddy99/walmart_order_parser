@@ -46,14 +46,32 @@ const DragDrop = ({
 
   const handleOnDrop = (event, groupName) => {
     const order = JSON.parse(event.dataTransfer.getData("order"));
-    if (order.quantity <= 1) {
-      postHandleOnDrop(order, groupName);
-      setCurrentOnboardingConfig(3, setOnboardingData);
-      return;
-    }
 
-    setCurrentOnboardingConfig(3, setOnboardingData);
-    setModal({ ...modal, show: true, order: order, groupName: groupName });
+    const targetContainer = document.getElementById(groupName);
+    const widgetButton = document.getElementById(order.idx);
+
+    widgetButton.style.transition = "transform 0.35s ease-in-out";
+    widgetButton.style.transform = `translate(${
+      targetContainer.getBoundingClientRect().left -
+      widgetButton.getBoundingClientRect().left
+    }px, ${
+      targetContainer.getBoundingClientRect().top -
+      widgetButton.getBoundingClientRect().top
+    }px)`;
+
+    setTimeout(() => {
+      widgetButton.style.transform = "";
+      widgetButton.style.transition = "";
+
+      if (order.quantity <= 1) {
+        postHandleOnDrop(order, groupName);
+        setCurrentOnboardingConfig(3, setOnboardingData);
+        return;
+      }
+
+      setCurrentOnboardingConfig(3, setOnboardingData);
+      setModal({ ...modal, show: true, order: order, groupName: groupName });
+    }, 350); // 500ms = duration of the transition
   };
 
   const findUpdateOrReplace = (objArr, obj, key1, key2, operation) => {
@@ -156,25 +174,44 @@ const DragDrop = ({
     setGroups(newGroups);
   };
 
-  const deleteItemHandler = (groupName, order) => {
-    const updatedOrders = findUpdateOrReplace(
-      orderDetails.ordersArr,
-      order,
-      "name",
-      "idx",
-      "add"
-    );
+  const deleteItemHandler = (groupName, order, widgetIdx) => {
+    const targetContainer = document.getElementsByClassName("widgets")[0];
+    const widgetButton = document.getElementById(widgetIdx);
 
-    setOrderDetails({ ...orderDetails, ordersArr: updatedOrders });
+    if (targetContainer) {
+      widgetButton.style.transition = "transform 0.35s ease-in-out";
+      widgetButton.style.transform = `translate(${
+        targetContainer.getBoundingClientRect().left -
+        widgetButton.getBoundingClientRect().left
+      }px, ${
+        targetContainer.getBoundingClientRect().top -
+        widgetButton.getBoundingClientRect().top
+      }px)`;
+    }
 
-    const updatedGroups = findUpdateOrReplace(
-      groups[groupName],
-      order,
-      "name",
-      "idx",
-      "subtract"
-    );
-    setGroups({ ...groups, [groupName]: updatedGroups });
+    setTimeout(() => {
+      widgetButton.style.transform = "";
+      widgetButton.style.transition = "";
+
+      const updatedOrders = findUpdateOrReplace(
+        orderDetails.ordersArr,
+        order,
+        "name",
+        "idx",
+        "add"
+      );
+
+      setOrderDetails({ ...orderDetails, ordersArr: updatedOrders });
+
+      const updatedGroups = findUpdateOrReplace(
+        groups[groupName],
+        order,
+        "name",
+        "idx",
+        "subtract"
+      );
+      setGroups({ ...groups, [groupName]: updatedGroups });
+    }, 350); // 500ms = duration of the transition
   };
 
   return (
@@ -277,8 +314,13 @@ const DragDrop = ({
                         className="groupWidget"
                         startIcon={<ClearIcon />}
                         key={groupName + "/" + index}
+                        id={groupName + "/" + index}
                         onClick={() => {
-                          deleteItemHandler(groupName, order);
+                          deleteItemHandler(
+                            groupName,
+                            order,
+                            groupName + "/" + index
+                          );
                         }}
                       >
                         {order.name} | Qty: {order.quantity}

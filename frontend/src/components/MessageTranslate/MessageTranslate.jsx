@@ -53,7 +53,10 @@ const MessageTranslate = ({
   };
 
   const postHandleOnDrop = (orders, groupName) => {
+    const targetContainer = document.getElementById(groupName);
     let updatedGroups = { ...groups };
+    let widgetButtons = [];
+
     orders.forEach((order) => {
       const temp = findUpdateOrReplace(
         updatedGroups[groupName],
@@ -64,6 +67,19 @@ const MessageTranslate = ({
       );
 
       updatedGroups = { ...updatedGroups, [groupName]: temp };
+      const widgetButton = document.getElementById(order.idx);
+      widgetButtons.push(widgetButton);
+
+      if (targetContainer) {
+        widgetButton.style.transition = "transform 1s ease-in-out";
+        widgetButton.style.transform = `translate(${
+          targetContainer.getBoundingClientRect().left -
+          widgetButton.getBoundingClientRect().left
+        }px, ${
+          targetContainer.getBoundingClientRect().top -
+          widgetButton.getBoundingClientRect().top
+        }px)`;
+      }
     });
 
     let updatedOrders = { ...orderDetails };
@@ -79,8 +95,14 @@ const MessageTranslate = ({
       updatedOrders = { ...updatedOrders, ordersArr: temp };
     });
 
-    setGroups(updatedGroups);
-    setOrderDetails(updatedOrders);
+    setTimeout(() => {
+      widgetButtons.forEach((widgetButton) => {
+        widgetButton.style.transform = "";
+        widgetButton.style.transition = "";
+      });
+      setGroups(updatedGroups);
+      setOrderDetails(updatedOrders);
+    }, 1000);
   };
 
   const handlePassedText = () => {
