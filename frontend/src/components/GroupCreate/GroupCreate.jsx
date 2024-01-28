@@ -29,7 +29,7 @@ const GroupCreate = ({ groups, setGroups, setOnboardingData }) => {
         color="primary"
         onClick={(e) => {
           if (name != "") {
-            const newName = name.replace(/\s+/g, "");
+            const newName = name.toLowerCase().replace(/\s+/g, "");
             setGroups({ ...groups, [newName]: [] });
             setName("");
             addToLocalStorage(newName);
