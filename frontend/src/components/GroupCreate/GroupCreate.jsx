@@ -29,9 +29,10 @@ const GroupCreate = ({ groups, setGroups, setOnboardingData }) => {
         color="primary"
         onClick={(e) => {
           if (name != "") {
-            setGroups({ ...groups, [name]: [] });
+            const newName = name.replace(/\s+/g, "");
+            setGroups({ ...groups, [newName]: [] });
             setName("");
-            addToLocalStorage(name);
+            addToLocalStorage(newName);
 
             setCurrentOnboardingConfig(2, setOnboardingData);
           }

@@ -91,7 +91,7 @@ const Summary = ({ orderDetails, groups }) => {
                 <TableBody>
                   <TableRow
                     className="table_body"
-                    key={"table_summary_row1"}
+                    key={"table_summary_name"}
                     sx={{
                       "&:last-child td, &:last-child th": { border: 0 },
                     }}
@@ -101,7 +101,7 @@ const Summary = ({ orderDetails, groups }) => {
                   </TableRow>
                   <TableRow
                     className="table_body"
-                    key={"table_summary_row1"}
+                    key={"table_summary_date"}
                     sx={{
                       "&:last-child td, &:last-child th": { border: 0 },
                     }}
@@ -111,7 +111,7 @@ const Summary = ({ orderDetails, groups }) => {
                   </TableRow>
                   <TableRow
                     className="table_body"
-                    key={"table_summary_row1"}
+                    key={"table_summary_subtotal"}
                     sx={{
                       "&:last-child td, &:last-child th": { border: 0 },
                     }}
@@ -123,7 +123,7 @@ const Summary = ({ orderDetails, groups }) => {
                   </TableRow>
                   <TableRow
                     className="table_body"
-                    key={"table_summary_row2"}
+                    key={"table_summary_savings"}
                     sx={{
                       "&:last-child td, &:last-child th": { border: 0 },
                     }}
@@ -133,7 +133,7 @@ const Summary = ({ orderDetails, groups }) => {
                   </TableRow>
                   <TableRow
                     className="table_body"
-                    key={"table_summary_row3"}
+                    key={"table_summary_tax"}
                     sx={{
                       "&:last-child td, &:last-child th": { border: 0 },
                     }}
@@ -143,7 +143,7 @@ const Summary = ({ orderDetails, groups }) => {
                   </TableRow>
                   <TableRow
                     className="table_body"
-                    key={"table_summary_row4"}
+                    key={"table_summary_delivery_fee"}
                     sx={{
                       "&:last-child td, &:last-child th": { border: 0 },
                     }}
@@ -153,7 +153,7 @@ const Summary = ({ orderDetails, groups }) => {
                   </TableRow>
                   <TableRow
                     className="table_body"
-                    key={"table_summary_row5"}
+                    key={"table_summary_delivery_tip"}
                     sx={{
                       "&:last-child td, &:last-child th": { border: 0 },
                     }}
@@ -163,7 +163,7 @@ const Summary = ({ orderDetails, groups }) => {
                   </TableRow>
                   <TableRow
                     className="table_body"
-                    key={"table_summary_row6"}
+                    key={"table_summary_order_total"}
                     sx={{
                       "&:last-child td, &:last-child th": { border: 0 },
                     }}
@@ -173,7 +173,7 @@ const Summary = ({ orderDetails, groups }) => {
                   </TableRow>
                   <TableRow
                     className="table_body"
-                    key={"table_summary_row7"}
+                    key={"table_summary_splittotal"}
                     sx={{
                       "&:last-child td, &:last-child th": { border: 0 },
                     }}
@@ -184,7 +184,7 @@ const Summary = ({ orderDetails, groups }) => {
                   {orderDetails.total - getTotalGroupsContribution() > 0 ? (
                     <TableRow
                       className="table_body"
-                      key={"table_summary_row8"}
+                      key={"table_summary_rem_balance"}
                       sx={{
                         "&:last-child td, &:last-child th": { border: 0 },
                       }}

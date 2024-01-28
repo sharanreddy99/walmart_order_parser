@@ -14,6 +14,8 @@ import {
   getCurrentOnboardingConfig,
   setCurrentOnboardingConfig,
 } from "./config/onboarding";
+import { TextField } from "@mui/material";
+import MessageTranslate from "./components/MessageTranslate/MessageTranslate";
 
 const App = () => {
   // states
@@ -136,6 +138,13 @@ const App = () => {
           setOrderDetails={setOrderDetails}
           setCurrentOnboardingConfig={setCurrentOnboardingConfig}
           setOnboardingData={setOnboardingData}
+        />
+
+        <MessageTranslate
+          groups={groups}
+          setGroups={setGroups}
+          orderDetails={orderDetails}
+          setOrderDetails={setOrderDetails}
         />
       </LocalizationProvider>
     </div>
