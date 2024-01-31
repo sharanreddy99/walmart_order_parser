@@ -133,7 +133,7 @@ const MessageTranslate = ({
       <TextField
         sx={{ width: "85%" }}
         id="ordertext"
-        label="Split by Text"
+        label="Assign Items to Groups"
         value={orderText}
         onChange={(e) => {
           setOrderText(e.target.value);
@@ -155,7 +155,7 @@ const MessageTranslate = ({
           "&:hover": { backgroundColor: "#002964" },
         }}
       >
-        Parse Text
+        Assign Items
       </Button>
     </Paper>
   );

@@ -116,21 +116,24 @@ const App = () => {
           setGroups={setGroups}
           setOrderDetails={setOrderDetails}
         />
-
         <FileUpload
           handleUpload={handleUpload}
           handleFileChange={handleFileChange}
           selectedFile={selectedFile}
           key={selectedFile}
         />
-
         <GroupCreate
           groups={groups}
           setGroups={setGroups}
           setOnboardingData={setOnboardingData}
         />
         <Summary groups={groups} orderDetails={orderDetails} />
-
+        <MessageTranslate
+          groups={groups}
+          setGroups={setGroups}
+          orderDetails={orderDetails}
+          setOrderDetails={setOrderDetails}
+        />
         <DragDrop
           groups={groups}
           setGroups={setGroups}
@@ -138,13 +141,6 @@ const App = () => {
           setOrderDetails={setOrderDetails}
           setCurrentOnboardingConfig={setCurrentOnboardingConfig}
           setOnboardingData={setOnboardingData}
-        />
-
-        <MessageTranslate
-          groups={groups}
-          setGroups={setGroups}
-          orderDetails={orderDetails}
-          setOrderDetails={setOrderDetails}
         />
       </LocalizationProvider>
     </div>
