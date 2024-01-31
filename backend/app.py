@@ -71,7 +71,7 @@ def upload_order():
                 object["orderName"] = result.groups()[0]
 
             result = re.search(
-                r".*?((Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[ ]{1}([\d]{2}), ([\d]{4})) order",
+                r".*?((Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[ ]{1}([\d]{2}), ([\d]{4})) o\s*r\s*d\s*e\s*r",
                 input_string,
                 re.IGNORECASE,
             )
