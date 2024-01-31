@@ -108,7 +108,7 @@ const MessageTranslate = ({
   const handlePassedText = () => {
     const textArr = orderText.split("ordered by");
     if (textArr.length == 2 && groups[textArr[1].replace(/\s+/g, "")]) {
-      const groupName = textArr[1].replace(/\s+/g, "");
+      const groupName = textArr[1].replace(/\s+/g, "").toLowerCase();
       if (textArr[0].replace(/\s+/g, "").toLocaleLowerCase() == "all") {
         postHandleOnDrop(orderDetails.ordersArr, groupName);
       } else {

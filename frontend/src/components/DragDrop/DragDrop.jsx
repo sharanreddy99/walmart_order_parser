@@ -7,6 +7,7 @@ import {
   Grid,
   IconButton,
   Typography,
+  TextField,
 } from "@mui/material";
 import ClearIcon from "@mui/icons-material/Clear";
 import QuantityModal from "../Modal/QuantityModal";
@@ -38,6 +39,8 @@ const DragDrop = ({
     show: false,
     order: { name: "", quantity: 0, price: 0, status: "", perItemCost: 0 },
   });
+
+  const [filterText, setFilterText] = useState("");
 
   // handlers
   const handleOnDrag = (e, order) => {
@@ -222,6 +225,17 @@ const DragDrop = ({
         onSplitItem={postHandleOnDrop}
       />
       <Grid container>
+        <TextField
+          sx={{ width: "50%", marginLeft: "50%" }}
+          id="filterGroup"
+          label="Filter Groups"
+          value={filterText}
+          onChange={(e) => {
+            setFilterText(e.target.value);
+          }}
+          placeholder="Filter Groups"
+        />
+
         {orderDetails &&
         (Object.keys(orderDetails).length == 0 ||
           (Object.keys(orderDetails).length > 0 &&
@@ -277,60 +291,66 @@ const DragDrop = ({
           >
             Groups
           </Typography>
-          {Object.keys(groups).map((groupName) => {
-            return (
-              <div
-                key={groupName}
-                id={groupName}
-                className="page"
-                onDrop={(e) => {
-                  handleOnDrop(e, groupName);
-                }}
-                onDragOver={handleDragOver}
-              >
-                <h4>
-                  <b style={{ fontWeight: "bold", textTransform: "uppercase" }}>
-                    {groupName}
-                  </b>
-                  <Button
-                    variant="contained"
-                    color="error"
-                    component="span"
-                    startIcon={<ClearIcon />}
-                    sx={{ float: "right" }}
-                    onClick={() => {
-                      deleteGroupHandler(groupName);
-                    }}
-                  >
-                    Remove Group
-                  </Button>
-                </h4>
-                <div style={{ float: "left", clear: "right" }}>
-                  {groups[groupName].map((order, index) => {
-                    return (
-                      <Button
-                        variant="contained"
-                        component="span"
-                        className="groupWidget"
-                        startIcon={<ClearIcon />}
-                        key={groupName + "/" + index}
-                        id={groupName + "/" + index}
-                        onClick={() => {
-                          deleteItemHandler(
-                            groupName,
-                            order,
-                            groupName + "/" + index
-                          );
-                        }}
-                      >
-                        {order.name} | Qty: {order.quantity}
-                      </Button>
-                    );
-                  })}
+          {Object.keys(groups)
+            .filter((groupName) =>
+              groupName.toLowerCase().includes(filterText.toLowerCase())
+            )
+            .map((groupName) => {
+              return (
+                <div
+                  key={groupName}
+                  id={groupName}
+                  className="page"
+                  onDrop={(e) => {
+                    handleOnDrop(e, groupName);
+                  }}
+                  onDragOver={handleDragOver}
+                >
+                  <h4>
+                    <b
+                      style={{ fontWeight: "bold", textTransform: "uppercase" }}
+                    >
+                      {groupName}
+                    </b>
+                    <Button
+                      variant="contained"
+                      color="error"
+                      component="span"
+                      startIcon={<ClearIcon />}
+                      sx={{ float: "right" }}
+                      onClick={() => {
+                        deleteGroupHandler(groupName);
+                      }}
+                    >
+                      Remove Group
+                    </Button>
+                  </h4>
+                  <div style={{ float: "left", clear: "right" }}>
+                    {groups[groupName].map((order, index) => {
+                      return (
+                        <Button
+                          variant="contained"
+                          component="span"
+                          className="groupWidget"
+                          startIcon={<ClearIcon />}
+                          key={groupName + "/" + index}
+                          id={groupName + "/" + index}
+                          onClick={() => {
+                            deleteItemHandler(
+                              groupName,
+                              order,
+                              groupName + "/" + index
+                            );
+                          }}
+                        >
+                          {order.name} | Qty: {order.quantity}
+                        </Button>
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
         </Grid>
       </Grid>
     </Container>
