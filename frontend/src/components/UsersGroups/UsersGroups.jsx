@@ -25,7 +25,13 @@ const UserGroups = () => {
     if (localStorage.getItem("groupNames")) {
       dispatch({
         type: "SET_DEFAULT_GROUPS",
-        payload: JSON.parse(localStorage.getItem("groupNames")),
+        payload: JSON.parse(localStorage.getItem("groupNames")).reduce(
+          (obj, key) => {
+            obj[key] = [];
+            return obj;
+          },
+          {}
+        ),
       });
     }
   }, []);

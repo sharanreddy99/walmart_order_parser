@@ -1,4 +1,5 @@
 const reducer = (state, action) => {
+  console.log(action);
   // Users
   if (action.type == "ADD_USER") {
     const newUser = action.payload;
@@ -34,40 +35,63 @@ const reducer = (state, action) => {
       tempGroup: tempGroup,
       tempGroupString: tempGroup.join(","),
     };
-  } else if (action.type == "CLEAR_USER_GROUP") {
+  } else if (action.type == "CLEAR_TEMP_GROUP") {
     return { ...state, tempGroup: [], tempGroupString: "" };
   }
 
   // Managing Created Groups
   if (action.type == "ADD_GROUP") {
-    let newGroupNames = [...state.groups];
-    if (!state.groups.includes(action.payload)) {
-      newGroupNames.push(action.payload);
-      localStorage.setItem("groupNames", JSON.stringify(newGroupNames));
-      return { ...state, groups: newGroupNames };
+    let newGroupsList = [...state.groupsList];
+    if (!state.groupsList.includes(action.payload)) {
+      newGroupsList.push(action.payload);
+      localStorage.setItem("groupNames", JSON.stringify(newGroupsList));
+      return {
+        ...state,
+        groupsList: newGroupsList,
+        groups: { ...state.groups, [action.payload]: [] },
+      };
     }
 
     return state;
   } else if (action.type == "SET_DEFAULT_GROUPS") {
-    return { ...state, groups: action.payload };
+    return {
+      ...state,
+      groups: action.payload,
+      groupsList: Object.keys(action.payload),
+    };
   }
 
   // OnboardingData
+  if (action.type == "SET_ONBOARDING_DATA") {
+    return { ...state, onboardingData: action.payload };
+  }
+
+  // File Upload
+  if (action.type == "SET_SELECTED_FILE") {
+    return { ...state, selectedFile: action.payload };
+  }
+
+  // Order Details
+  if (action.type == "SET_ORDER_DETAILS") {
+    return { ...state, orderDetails: action.payload };
+  }
 
   throw new Error("State Error");
 };
 
 const defaultState = {
   users: [],
-  groups: [],
+  groups: {},
+  groupsList: [],
+  tempGroup: [],
+  tempGroupString: "",
+  selectedFile: null,
+  orderDetails: { ordersArr: [] },
   onboardingData: {
     data: null,
     stepNumber: 0,
     isShown: false,
   },
-  tempGroup: [],
-  tempGroupString: "",
-  groupNames: [],
 };
 
 export { reducer, defaultState };

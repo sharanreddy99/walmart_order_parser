@@ -1,10 +1,13 @@
 import { Button, Paper, TextField } from "@mui/material";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import moment from "moment";
 import axios from "axios";
+import { useCustomContext } from "../../CustomContext/CustomContext";
 
-const FetchPastSplit = ({ setOrderDetails, setGroups }) => {
+const FetchPastSplit = () => {
+  // States
+  const { state, dispatch } = useCustomContext();
   const [orderId, setOrderId] = useState("");
   const [orderDate, setOrderDate] = useState(moment());
 
@@ -18,8 +21,11 @@ const FetchPastSplit = ({ setOrderDetails, setGroups }) => {
       ).format("YYYY-MM-DD")}`
     );
 
-    setGroups(resp.data.groupsInfo);
-    setOrderDetails({ ...resp.data, ordersArr: [] });
+    dispatch({ type: "SET_DEFAULT_GROUPS", payload: resp.data.groupsInfo });
+    dispatch({
+      type: "SET_ORDER_DETAILS",
+      payload: { ...resp.data, ordersArr: [] },
+    });
   };
 
   return (

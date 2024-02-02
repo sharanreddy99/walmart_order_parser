@@ -12,14 +12,14 @@ import { useState } from "react";
 import { setCurrentOnboardingConfig } from "../../config/onboarding";
 import { useCustomContext } from "../../CustomContext/CustomContext";
 
-const GroupCreate = ({ groups, setGroups, setOnboardingData }) => {
+const GroupCreate = () => {
   const { state, dispatch } = useCustomContext();
 
   // Handlers
   const handleAddGroup = (e) => {
     if (state.tempGroupString) {
       dispatch({ type: "ADD_GROUP", payload: state.tempGroupString });
-      dispatch({ type: "CLEAR_USER_GROUP" });
+      dispatch({ type: "CLEAR_TEMP_GROUP" });
 
       // TODO - nned to change onboarding handling
       // setCurrentOnboardingConfig(2, setOnboardingData);
@@ -42,7 +42,7 @@ const GroupCreate = ({ groups, setGroups, setOnboardingData }) => {
           variant="contained"
           className="customButton"
           onClick={(e) => {
-            dispatch({ type: "CLEAR_USER_GROUP" });
+            dispatch({ type: "CLEAR_TEMP_GROUP" });
           }}
           size="large"
           sx={{
@@ -66,7 +66,8 @@ const GroupCreate = ({ groups, setGroups, setOnboardingData }) => {
         </Button>
       </Box>
       <List>
-        {state.groups.map((group) => {
+        {console.log(state.groupsList)}
+        {state.groupsList.map((group) => {
           return (
             <ListItem
               key={group}
