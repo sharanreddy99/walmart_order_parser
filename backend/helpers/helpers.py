@@ -171,3 +171,21 @@ def fetch_processed_order_details(orderID, orderDate):
 
     resultObject["groupsInfo"] = groupsInfo
     return resultObject
+
+
+def add_or_update_users(name, email):
+    existing_user = db.session.execute(
+        select(Users).filter(
+            (Users.name == name),
+            (Users.email == email),
+        )
+    ).fetchone()
+
+    if existing_user is None:
+        new_user = Users(name=name, email=email)
+        db.session.add(new_user)
+        db.session.commit()
+        db.session.refresh(new_user)
+        return new_user.ID
+
+    return existing_user[0].ID

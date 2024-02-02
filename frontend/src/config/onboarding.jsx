@@ -26,6 +26,7 @@ const onboardingConfig = [
       "<li>Now assign individual items to each to group in order to aggregate the incurred cost for each participant in the order.</li><br/>" +
       "<li>You can simply drag the item from the orders and drop it in any of the groups created.</li><br/>" +
       "<li>In case any item is ordered in multiple quantities, you can also split the individual item based on the quantities among the required participants.</li><br/>" +
+      "<li>To simplify the item assignment process, you can also make use of the textbox to assign multiple items to a group. For example: you can type <b>potatoes;;tomatoes ordered by user1,user2</b> to assign those items to the group. The item names can be a substring and need not be the complete item name.</li><br/>" +
       "</ul>",
   },
   {

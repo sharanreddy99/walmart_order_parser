@@ -1,53 +1,93 @@
-import { Button, Paper, TextField, Typography } from "@mui/material";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import {
+  Box,
+  Button,
+  List,
+  ListItem,
+  ListItemText,
+  Paper,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { useState } from "react";
 import { setCurrentOnboardingConfig } from "../../config/onboarding";
+import { useCustomContext } from "../../CustomContext/CustomContext";
 
 const GroupCreate = ({ groups, setGroups, setOnboardingData }) => {
-  const [name, setName] = useState("");
+  const { state, dispatch } = useCustomContext();
 
-  const addToLocalStorage = (name) => {
-    const groupArr = Object.keys(groups);
-    groupArr.push(name);
-    localStorage.setItem("groupNames", JSON.stringify(groupArr));
+  // Handlers
+  const handleAddGroup = (e) => {
+    if (state.tempGroupString) {
+      dispatch({ type: "ADD_GROUP", payload: state.tempGroupString });
+      dispatch({ type: "CLEAR_USER_GROUP" });
+
+      // TODO - nned to change onboarding handling
+      // setCurrentOnboardingConfig(2, setOnboardingData);
+    }
   };
+
   return (
-    <Paper elevation={3} style={{ padding: 20, marginBottom: "10px" }}>
-      <TextField
-        sx={{ width: "50%" }}
-        id="group"
-        label="Group Name"
-        value={name}
-        onChange={(e) => {
-          setName(e.target.value);
-        }}
-        placeholder="Comma separated names to get individual contributions"
-      />
+    <>
+      <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+        <TextField
+          disabled
+          sx={{ width: "50%" }}
+          id="group"
+          value={state.tempGroupString}
+          label="Group Name"
+          placeholder="Comma separated names to get individual contributions"
+        />
 
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={(e) => {
-          if (name != "") {
-            const newName = name.toLowerCase().replace(/\s+/g, "");
-            setGroups({ ...groups, [newName]: [] });
-            setName("");
-            addToLocalStorage(newName);
-
-            setCurrentOnboardingConfig(2, setOnboardingData);
-          }
-        }}
-        size="large"
-        sx={{
-          float: "right",
-          width: "48%",
-          backgroundColor: "#002984",
-          "&:hover": { backgroundColor: "#002964" },
-        }}
-      >
-        Add Group
-      </Button>
-    </Paper>
+        <Button
+          variant="contained"
+          className="customButton"
+          onClick={(e) => {
+            dispatch({ type: "CLEAR_USER_GROUP" });
+          }}
+          size="large"
+          sx={{
+            width: "20%",
+          }}
+        >
+          Clear
+        </Button>
+        <Button
+          variant="contained"
+          className="customButton"
+          onClick={(e) => {
+            handleAddGroup(e);
+          }}
+          size="large"
+          sx={{
+            width: "20%",
+          }}
+        >
+          Add Group
+        </Button>
+      </Box>
+      <List>
+        {state.groups.map((group) => {
+          return (
+            <ListItem
+              key={group}
+              className="customButton"
+              sx={{
+                marginBottom: "5px",
+                borderRadius: "5px",
+              }}
+            >
+              <ListItemText
+                sx={{
+                  fontWeight: "bold",
+                  textDecoration: "uppercase",
+                }}
+                primary={group}
+              />
+            </ListItem>
+          );
+        })}
+      </List>
+    </>
   );
 };
 

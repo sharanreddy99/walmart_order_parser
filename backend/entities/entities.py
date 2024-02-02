@@ -42,3 +42,9 @@ class WalmartOrderProcessedItems(db.Model):
     price = db.Column(db.Float, nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
     per_item_cost = db.Column(db.Float, nullable=False)
+
+
+class Users(db.Model):
+    ID = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(30), nullable=False)
+    email = db.Column(db.String(60), nullable=False)

@@ -3,6 +3,7 @@ import sys
 from flask import request
 
 from backend.helpers.helpers import (
+    add_or_update_users,
     add_or_update_walmart_groups,
     add_or_update_walmart_order,
     add_or_update_walmart_order_processed_items,
@@ -184,3 +185,14 @@ def fetch_processed_order():
 
     processedOrders = fetch_processed_order_details(orderID, orderDate)
     return processedOrders
+
+
+@app.route("/user_auth", methods=["POST"])
+@cross_origin(supports_credentials=True)
+def user_auth():
+    reqdata = request.get_json()
+    name = reqdata["name"]
+    email = reqdata["email"]
+
+    userID = add_or_update_users(name, email)
+    return {"userID": userID, "name": name, "email": email}

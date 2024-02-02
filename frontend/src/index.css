@@ -3,3 +3,17 @@
   -ms-user-select: none; /* IE 10 and IE 11 */
   user-select: none; /* Standard syntax */
 }
+
+body {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.customButton {
+  color: white;
+  background-color: #002984 !important;
+}
+
+.customButton:hover {
+  background-color: #002964 !important;
+}
