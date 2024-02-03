@@ -16,20 +16,6 @@ import { setCurrentOnboardingConfig } from "../../config/onboarding";
 import { useCustomContext } from "../../CustomContext/CustomContext";
 
 const DragDrop = () => {
-  // // useEffect
-  // useEffect(() => {
-  //   const groupNames = localStorage.getItem("groupNames");
-  //   if (groupNames) {
-  //     const groupArr = JSON.parse(groupNames);
-  //     const groupObj = groupArr.reduce((obj, group) => {
-  //       obj[group] = [];
-  //       return obj;
-  //     }, {});
-
-  //     setGroups(groupObj);
-  //   }
-  // }, []);
-
   // States
   const { state, dispatch } = useCustomContext();
   const [modal, setModal] = useState({

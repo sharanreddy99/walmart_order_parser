@@ -1,5 +1,4 @@
 const reducer = (state, action) => {
-  console.log(action);
   // Users
   if (action.type == "ADD_USER") {
     const newUser = action.payload;
@@ -69,6 +68,8 @@ const reducer = (state, action) => {
   // File Upload
   if (action.type == "SET_SELECTED_FILE") {
     return { ...state, selectedFile: action.payload };
+  } else if (action.type == "IS_FILE_UPLOADED") {
+    return { ...state, isFileUploaded: action.payload };
   }
 
   // Order Details
@@ -99,6 +100,7 @@ const defaultState = {
     isShown: false,
   },
   isOrderSplitChanged: false,
+  isFileUploaded: false,
 };
 
 export { reducer, defaultState };

@@ -40,6 +40,19 @@ const MainScreen = () => {
     if (state.orderDetails.ordersArr.length == 0 && state.isOrderSplitChanged) {
       postProcessedGroupWiseOrders();
     }
+
+    if (!state.isFileUploaded) {
+      const groupNames = localStorage.getItem("groupNames");
+      if (groupNames) {
+        const groupArr = JSON.parse(groupNames);
+        const groupObj = groupArr.reduce((obj, group) => {
+          obj[group] = [];
+          return obj;
+        }, {});
+
+        dispatch({ type: "SET_DEFAULT_GROUPS", payload: groupObj });
+      }
+    }
   }, [JSON.stringify(state.orderDetails)]);
 
   const postProcessedGroupWiseOrders = async () => {
@@ -55,8 +68,9 @@ const MainScreen = () => {
 
         const tempUsers = state.users.filter((user) => user.name == temp);
         if (tempUsers.length == 0) {
-          console.log(state.users, temp);
-          alert("One of the users is not signed in. Cannot modify the order");
+          console.log(
+            "One of the users is not signed in. Cannot modify the order"
+          );
           throw new Error("Unable to modify");
         } else {
           userIds.push(tempUsers[0].userID);

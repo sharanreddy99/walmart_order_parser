@@ -39,6 +39,7 @@ const FileUpload = () => {
       });
 
       dispatch({ type: "SET_SELECTED_FILE", payload: "" });
+      dispatch({ type: "IS_FILE_UPLOADED", payload: true });
 
       dispatch({
         type: "SET_DEFAULT_GROUPS",
