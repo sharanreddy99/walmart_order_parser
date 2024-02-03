@@ -1,13 +1,10 @@
 import { Button, Paper, TextField, Typography } from "@mui/material";
 import { useState } from "react";
 import { sortByKey } from "../../utils";
+import { useCustomContext } from "../../CustomContext/CustomContext";
 
-const MessageTranslate = ({
-  groups,
-  setGroups,
-  orderDetails,
-  setOrderDetails,
-}) => {
+const MessageTranslate = () => {
+  const { state, dispatch } = useCustomContext();
   const [orderText, setOrderText] = useState("");
 
   const findUpdateOrReplace = (objArr, obj, key1, key2, operation) => {
@@ -54,7 +51,7 @@ const MessageTranslate = ({
 
   const postHandleOnDrop = (orders, groupName) => {
     const targetContainer = document.getElementById(groupName);
-    let updatedGroups = { ...groups };
+    let updatedGroups = { ...state.groups };
     let widgetButtons = [];
 
     orders.forEach((order) => {
@@ -82,7 +79,7 @@ const MessageTranslate = ({
       }
     });
 
-    let updatedOrders = { ...orderDetails };
+    let updatedOrders = { ...state.orderDetails };
     orders.forEach((order) => {
       const temp = findUpdateOrReplace(
         updatedOrders.ordersArr,
@@ -100,21 +97,22 @@ const MessageTranslate = ({
         widgetButton.style.transform = "";
         widgetButton.style.transition = "";
       });
-      setGroups(updatedGroups);
-      setOrderDetails(updatedOrders);
+
+      dispatch({ type: "SET_DEFAULT_GROUPS", payload: updatedGroups });
+      dispatch({ type: "SET_ORDER_DETAILS", payload: updatedOrders });
     }, 1000);
   };
 
   const handlePassedText = () => {
     const textArr = orderText.split("ordered by");
-    if (textArr.length == 2 && groups[textArr[1].replace(/\s+/g, "")]) {
+    if (textArr.length == 2 && state.groups[textArr[1].replace(/\s+/g, "")]) {
       const groupName = textArr[1].replace(/\s+/g, "").toLowerCase();
       if (textArr[0].replace(/\s+/g, "").toLocaleLowerCase() == "all") {
-        postHandleOnDrop(orderDetails.ordersArr, groupName);
+        postHandleOnDrop(state.orderDetails.ordersArr, groupName);
       } else {
         const currItems = textArr[0].trim().toLowerCase().split(";;");
 
-        const newOrders = orderDetails.ordersArr.filter((order) => {
+        const newOrders = state.orderDetails.ordersArr.filter((order) => {
           for (let i = 0; i < currItems.length; i++) {
             if (order.name.toLowerCase().includes(currItems[i].toLowerCase())) {
               return true;

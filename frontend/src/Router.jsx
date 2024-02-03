@@ -4,6 +4,7 @@ import { Navigate, createBrowserRouter } from "react-router-dom";
 import UserGroups from "./components/UsersGroups/UsersGroups";
 import MainScreen from "./components/MainScreen/MainScreen";
 import PageTemplate from "./components/PageTemplate/PageTemplate";
+import Summary from "./components/Summary/Summary";
 
 const router = createBrowserRouter([
   {
@@ -30,7 +31,7 @@ const router = createBrowserRouter([
     path: "/order_summary",
     element: (
       <PageTemplate>
-        <h1>Summary</h1>
+        <Summary />
       </PageTemplate>
     ),
   },

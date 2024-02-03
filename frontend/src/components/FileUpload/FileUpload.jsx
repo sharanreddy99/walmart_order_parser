@@ -61,7 +61,9 @@ const FileUpload = () => {
       <input
         type="file"
         accept=".jpg, .jpeg, .png, .pdf" // Define the allowed file types
-        onChange={handleFileChange}
+        onChange={(e) => {
+          handleFileChange(e);
+        }}
         style={{ display: "none" }}
         id="file-input"
       />

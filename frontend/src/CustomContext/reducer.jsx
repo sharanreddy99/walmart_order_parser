@@ -73,7 +73,13 @@ const reducer = (state, action) => {
 
   // Order Details
   if (action.type == "SET_ORDER_DETAILS") {
-    return { ...state, orderDetails: action.payload };
+    return {
+      ...state,
+      orderDetails: action.payload,
+      isOrderSplitChanged: true,
+    };
+  } else if (action.type == "SET_ORDERS_CHANGE_STATUS") {
+    return { ...state, isOrderSplitChanged: action.payload };
   }
 
   throw new Error("State Error");
@@ -88,10 +94,11 @@ const defaultState = {
   selectedFile: null,
   orderDetails: { ordersArr: [] },
   onboardingData: {
-    data: null,
+    data: {},
     stepNumber: 0,
     isShown: false,
   },
+  isOrderSplitChanged: false,
 };
 
 export { reducer, defaultState };

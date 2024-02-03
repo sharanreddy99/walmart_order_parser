@@ -55,9 +55,14 @@ const SignedUsersComponent = () => {
                   variant="contained"
                   component="span"
                   startIcon={<ClearIcon />}
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.stopPropagation();
                     dispatch({
-                      type: "TOGGLE_USER_FROM_GROUP",
+                      type: "REMOVE_USER",
+                      payload: user,
+                    });
+                    dispatch({
+                      type: "CLEAR_TEMP_GROUP",
                       payload: user,
                     });
                   }}

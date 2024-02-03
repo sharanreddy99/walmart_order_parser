@@ -15,24 +15,29 @@ const UserGroups = () => {
 
   // Effects
   useEffect(() => {
-    if (localStorage.getItem("users")) {
-      dispatch({
-        type: "SET_DEFAULT_USERS",
-        payload: JSON.parse(localStorage.getItem("users")),
-      });
-    }
+    if (
+      state.orderDetails.ordersArr.length == 0 &&
+      Object.keys(state.orderDetails).length == 1
+    ) {
+      if (localStorage.getItem("users")) {
+        dispatch({
+          type: "SET_DEFAULT_USERS",
+          payload: JSON.parse(localStorage.getItem("users")),
+        });
+      }
 
-    if (localStorage.getItem("groupNames")) {
-      dispatch({
-        type: "SET_DEFAULT_GROUPS",
-        payload: JSON.parse(localStorage.getItem("groupNames")).reduce(
-          (obj, key) => {
-            obj[key] = [];
-            return obj;
-          },
-          {}
-        ),
-      });
+      if (localStorage.getItem("groupNames")) {
+        dispatch({
+          type: "SET_DEFAULT_GROUPS",
+          payload: JSON.parse(localStorage.getItem("groupNames")).reduce(
+            (obj, key) => {
+              obj[key] = [];
+              return obj;
+            },
+            {}
+          ),
+        });
+      }
     }
   }, []);
 

@@ -18,52 +18,73 @@ import { useCustomContext } from "../../CustomContext/CustomContext";
 const MainScreen = () => {
   // states
   const { state, dispatch } = useCustomContext();
-  const { onboardingData, selectedFile, orderDetails, groups } = state;
-
-  // Temporary Handlers
-  const setOnboardingData = (data) => {
-    dispatch({ type: "SET_ONBOARDING_DATA", payload: data });
-  };
-
-  const setSelectedFile = (data) => {
-    dispatch({ type: "SET_SELECTED_FILE", payload: data });
-  };
-
-  const setGroups = (data) => {
-    dispatch({ type: "SET_DEFAULT_GROUPS", payload: data });
-  };
-
-  const setOrderDetails = (data) => {
-    dispatch({ type: "SET_ORDER_DETAILS", payload: data });
-  };
 
   // effects
   useEffect(() => {
     if (localStorage.getItem("onboardingStep") == null) {
-      setCurrentOnboardingConfig(0, setOnboardingData);
+      setCurrentOnboardingConfig(0, (data) => {
+        dispatch({ type: "SET_ONBOARDING_DATA", payload: data });
+      });
     } else if (localStorage.getItem("onboardingStep") != "3") {
       setCurrentOnboardingConfig(
         parseInt(localStorage.getItem("onboardingStep")),
-        setOnboardingData,
+        (data) => {
+          dispatch({ type: "SET_ONBOARDING_DATA", payload: data });
+        },
         true
       );
     }
   }, []);
 
   useEffect(() => {
-    if (orderDetails.ordersArr.length == 0) {
+    if (state.orderDetails.ordersArr.length == 0 && state.isOrderSplitChanged) {
       postProcessedGroupWiseOrders();
     }
-  }, [JSON.stringify(orderDetails)]);
+  }, [JSON.stringify(state.orderDetails)]);
 
   const postProcessedGroupWiseOrders = async () => {
+    const groupNames = Object.keys(state.groups);
+    let groupToIds = {};
+
+    for (let group of groupNames) {
+      const userIds = [];
+      for (let temp of group.split(",")) {
+        if (state.groups[temp]?.length == 0) {
+          continue;
+        }
+
+        const tempUsers = state.users.filter((user) => user.name == temp);
+        if (tempUsers.length == 0) {
+          console.log(state.users, temp);
+          alert("One of the users is not signed in. Cannot modify the order");
+          throw new Error("Unable to modify");
+        } else {
+          userIds.push(tempUsers[0].userID);
+        }
+      }
+
+      if (userIds.length == 0) {
+        continue;
+      }
+
+      groupToIds[group] = userIds.join(",");
+    }
+
+    const newGroups = Object.keys(state.groups)
+      .filter((group) => Object.keys(groupToIds).includes(group))
+      .reduce((obj, key) => {
+        obj[key] = state.groups[key];
+        return obj;
+      }, {});
+
     await axios.post(
       import.meta.env.VITE_WALMART_PARSER_BACKEND_URL +
         "/upload_processed_order",
       {
-        ...groups,
-        orderID: orderDetails.orderName,
-        orderDate: orderDetails.date,
+        ...newGroups,
+        groupToIds: groupToIds,
+        orderID: state.orderDetails.orderName,
+        orderDate: state.orderDetails.date,
       },
       {
         headers: {
@@ -71,34 +92,19 @@ const MainScreen = () => {
         },
       }
     );
+    dispatch({ type: "SET_ORDERS_CHANGE_STATUS", payload: false });
   };
 
   return (
     <div className="root">
       <LocalizationProvider dateAdapter={AdapterMoment}>
-        {getCurrentOnboardingConfig(onboardingData.stepNumber) != null ? (
-          <OnboardingWizard
-            showModal={onboardingData.isShown}
-            setShowModal={setOnboardingData}
-            {...onboardingData.data}
-          />
+        {getCurrentOnboardingConfig(state.onboardingData.stepNumber) != null ? (
+          <OnboardingWizard />
         ) : null}
         <FetchPastSplit />
         <FileUpload />
-        <MessageTranslate
-          groups={groups}
-          setGroups={setGroups}
-          orderDetails={orderDetails}
-          setOrderDetails={setOrderDetails}
-        />
-        <DragDrop
-          groups={groups}
-          setGroups={setGroups}
-          orderDetails={orderDetails}
-          setOrderDetails={setOrderDetails}
-          setCurrentOnboardingConfig={setCurrentOnboardingConfig}
-          setOnboardingData={setOnboardingData}
-        />
+        <MessageTranslate />
+        <DragDrop />
       </LocalizationProvider>
     </div>
   );

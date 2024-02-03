@@ -5,15 +5,23 @@ import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { Modal } from "@mui/material";
+import { useCustomContext } from "../../CustomContext/CustomContext";
 
-const OnboardingWizard = ({ showModal, setShowModal, title, body }) => {
+const OnboardingWizard = () => {
+  // States
+  const { state, dispatch } = useCustomContext();
+
+  // Handlers
   const handleClose = () => {
-    setShowModal({ ...showModal, isShown: false });
+    dispatch({
+      type: "SET_ONBOARDING_DATA",
+      payload: { ...state.onboardingData, isShown: false },
+    });
   };
 
   return (
     <Modal
-      open={showModal}
+      open={state.onboardingData.isShown}
       sx={{
         position: "absolute",
         top: "30%",
@@ -23,10 +31,14 @@ const OnboardingWizard = ({ showModal, setShowModal, title, body }) => {
       <Card sx={{ width: 500, borderRadius: "7px" }}>
         <CardContent>
           <Typography gutterBottom variant="h6" component="div">
-            <b>{title}</b>
+            <b>{state.onboardingData.data.title}</b>
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            <div dangerouslySetInnerHTML={{ __html: body }}></div>
+            <div
+              dangerouslySetInnerHTML={{
+                __html: state.onboardingData.data.body,
+              }}
+            ></div>
           </Typography>
         </CardContent>
         <CardActions sx={{ float: "right" }}>

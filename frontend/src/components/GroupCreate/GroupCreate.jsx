@@ -21,8 +21,9 @@ const GroupCreate = () => {
       dispatch({ type: "ADD_GROUP", payload: state.tempGroupString });
       dispatch({ type: "CLEAR_TEMP_GROUP" });
 
-      // TODO - nned to change onboarding handling
-      // setCurrentOnboardingConfig(2, setOnboardingData);
+      setCurrentOnboardingConfig(2, (data) => {
+        dispatch({ type: "SET_ONBOARDING_DATA", payload: data });
+      });
     }
   };
 
@@ -66,7 +67,6 @@ const GroupCreate = () => {
         </Button>
       </Box>
       <List>
-        {console.log(state.groupsList)}
         {state.groupsList.map((group) => {
           return (
             <ListItem

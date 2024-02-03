@@ -12,29 +12,26 @@ import {
 import ClearIcon from "@mui/icons-material/Clear";
 import QuantityModal from "../Modal/QuantityModal";
 import { sortByKey } from "../../utils";
+import { setCurrentOnboardingConfig } from "../../config/onboarding";
+import { useCustomContext } from "../../CustomContext/CustomContext";
 
-const DragDrop = ({
-  groups,
-  setGroups,
-  orderDetails,
-  setOrderDetails,
-  setCurrentOnboardingConfig,
-  setOnboardingData,
-}) => {
-  // useEffect
-  useEffect(() => {
-    const groupNames = localStorage.getItem("groupNames");
-    if (groupNames) {
-      const groupArr = JSON.parse(groupNames);
-      const groupObj = groupArr.reduce((obj, group) => {
-        obj[group] = [];
-        return obj;
-      }, {});
+const DragDrop = () => {
+  // // useEffect
+  // useEffect(() => {
+  //   const groupNames = localStorage.getItem("groupNames");
+  //   if (groupNames) {
+  //     const groupArr = JSON.parse(groupNames);
+  //     const groupObj = groupArr.reduce((obj, group) => {
+  //       obj[group] = [];
+  //       return obj;
+  //     }, {});
 
-      setGroups(groupObj);
-    }
-  }, []);
+  //     setGroups(groupObj);
+  //   }
+  // }, []);
 
+  // States
+  const { state, dispatch } = useCustomContext();
   const [modal, setModal] = useState({
     show: false,
     order: { name: "", quantity: 0, price: 0, status: "", perItemCost: 0 },
@@ -68,11 +65,15 @@ const DragDrop = ({
 
       if (order.quantity <= 1) {
         postHandleOnDrop(order, groupName);
-        setCurrentOnboardingConfig(3, setOnboardingData);
+        setCurrentOnboardingConfig(3, (data) =>
+          dispatch({ type: "SET_ONBOARDING_DATA", payload: data })
+        );
         return;
       }
 
-      setCurrentOnboardingConfig(3, setOnboardingData);
+      setCurrentOnboardingConfig(3, (data) =>
+        dispatch({ type: "SET_ONBOARDING_DATA", payload: data })
+      );
       setModal({ ...modal, show: true, order: order, groupName: groupName });
     }, 350); // 500ms = duration of the transition
   };
@@ -121,23 +122,29 @@ const DragDrop = ({
 
   const postHandleOnDrop = (order, groupName) => {
     const updatedGroups = findUpdateOrReplace(
-      groups[groupName],
+      state.groups[groupName],
       order,
       "name",
       "idx",
       "add"
     );
-    setGroups({ ...groups, [groupName]: updatedGroups });
+    dispatch({
+      type: "SET_DEFAULT_GROUPS",
+      payload: { ...state.groups, [groupName]: updatedGroups },
+    });
 
     const updatedOrders = findUpdateOrReplace(
-      orderDetails.ordersArr,
+      state.orderDetails.ordersArr,
       order,
       "name",
       "idx",
       "subtract"
     );
 
-    setOrderDetails({ ...orderDetails, ordersArr: updatedOrders });
+    dispatch({
+      type: "SET_ORDER_DETAILS",
+      payload: { ...state.orderDetails, ordersArr: updatedOrders },
+    });
   };
 
   const handleDragOver = (e) => {
@@ -145,9 +152,9 @@ const DragDrop = ({
   };
 
   const deleteGroupHandler = (groupName) => {
-    let removedOrders = [...groups[groupName]];
-    let currentOrdersArr = orderDetails.ordersArr;
-    if (Object.keys(orderDetails).length > 0) {
+    let removedOrders = [...state.groups[groupName]];
+    let currentOrdersArr = state.orderDetails.ordersArr;
+    if (Object.keys(state.orderDetails).length > 0) {
       removedOrders.forEach((obj) => {
         currentOrdersArr = findUpdateOrReplace(
           currentOrdersArr,
@@ -159,22 +166,25 @@ const DragDrop = ({
       });
     }
 
-    setOrderDetails({
-      ...orderDetails,
-      ordersArr: currentOrdersArr,
+    dispatch({
+      type: "SET_ORDER_DETAILS",
+      payload: { ...state.orderDetails, ordersArr: currentOrdersArr },
     });
 
-    const newGroups = Object.keys(groups)
+    const newGroups = Object.keys(state.groups)
       .filter((key) => key !== groupName)
       .reduce((obj, key) => {
-        obj[key] = groups[key];
+        obj[key] = state.groups[key];
         return obj;
       }, {});
 
     const groupArr = Object.keys(newGroups);
     localStorage.setItem("groupNames", JSON.stringify(groupArr));
 
-    setGroups(newGroups);
+    dispatch({
+      type: "SET_DEFAULT_GROUPS",
+      payload: newGroups,
+    });
   };
 
   const deleteItemHandler = (groupName, order, widgetIdx) => {
@@ -197,23 +207,30 @@ const DragDrop = ({
       widgetButton.style.transition = "";
 
       const updatedOrders = findUpdateOrReplace(
-        orderDetails.ordersArr,
+        state.orderDetails.ordersArr,
         order,
         "name",
         "idx",
         "add"
       );
 
-      setOrderDetails({ ...orderDetails, ordersArr: updatedOrders });
+      dispatch({
+        type: "SET_ORDER_DETAILS",
+        payload: { ...state.orderDetails, ordersArr: updatedOrders },
+      });
 
       const updatedGroups = findUpdateOrReplace(
-        groups[groupName],
+        state.groups[groupName],
         order,
         "name",
         "idx",
         "subtract"
       );
-      setGroups({ ...groups, [groupName]: updatedGroups });
+
+      dispatch({
+        type: "SET_DEFAULT_GROUPS",
+        payload: { ...state.groups, [groupName]: updatedGroups },
+      });
     }, 350); // 500ms = duration of the transition
   };
 
@@ -236,10 +253,10 @@ const DragDrop = ({
           placeholder="Filter Groups"
         />
 
-        {orderDetails &&
-        (Object.keys(orderDetails).length == 0 ||
-          (Object.keys(orderDetails).length > 0 &&
-            orderDetails.ordersArr.length == 0)) ? null : (
+        {state.orderDetails &&
+        (Object.keys(state.orderDetails).length == 0 ||
+          (Object.keys(state.orderDetails).length > 0 &&
+            state.orderDetails.ordersArr.length == 0)) ? null : (
           <Grid xs={6} item>
             <Typography
               sx={{
@@ -252,8 +269,8 @@ const DragDrop = ({
               Orders
             </Typography>
             <div className="widgets">
-              {Object.keys(orderDetails).length > 0
-                ? orderDetails.ordersArr.map((order) => {
+              {Object.keys(state.orderDetails).length > 0
+                ? state.orderDetails.ordersArr.map((order) => {
                     return (
                       <div
                         className="widget"
@@ -273,9 +290,9 @@ const DragDrop = ({
         )}
         <Grid
           xs={
-            Object.keys(orderDetails).length == 0 ||
-            (Object.keys(orderDetails).length > 0 &&
-              orderDetails.ordersArr.length == 0)
+            Object.keys(state.orderDetails).length == 0 ||
+            (Object.keys(state.orderDetails).length > 0 &&
+              state.orderDetails.ordersArr.length == 0)
               ? 12
               : 6
           }
@@ -291,7 +308,7 @@ const DragDrop = ({
           >
             Groups
           </Typography>
-          {Object.keys(groups)
+          {Object.keys(state.groups)
             .filter((groupName) =>
               groupName.toLowerCase().includes(filterText.toLowerCase())
             )
@@ -326,7 +343,7 @@ const DragDrop = ({
                     </Button>
                   </h4>
                   <div style={{ float: "left", clear: "right" }}>
-                    {groups[groupName].map((order, index) => {
+                    {state.groups[groupName].map((order, index) => {
                       return (
                         <Button
                           variant="contained"

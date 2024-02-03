@@ -30,12 +30,16 @@ class WalmartOrderGroups(db.Model):
         db.String(50), db.ForeignKey("walmart_order.orderID"), nullable=True
     )
     name = db.Column(db.String(255), nullable=False)
+    groupUserIds = db.Column(db.String(100), nullable=False)
 
 
 class WalmartOrderProcessedItems(db.Model):
     ID = db.Column(db.Integer, primary_key=True)
+    walmart_order_id = db.Column(
+        db.String(50), db.ForeignKey("walmart_order.orderID"), nullable=False
+    )
     walmart_order_group_id = db.Column(
-        db.Integer, db.ForeignKey("walmart_order_groups.ID"), nullable=True
+        db.Integer, db.ForeignKey("walmart_order_groups.ID"), nullable=False
     )
     name = db.Column(db.String(255), nullable=False)
     status = db.Column(db.String(15), nullable=False)

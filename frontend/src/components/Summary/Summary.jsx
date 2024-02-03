@@ -3,7 +3,6 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import {
-  Container,
   Grid,
   Paper,
   Table,
@@ -13,15 +12,19 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
+import { useCustomContext } from "../../CustomContext/CustomContext";
 
 import "./Summary.css";
 
-const Summary = ({ orderDetails, groups }) => {
+const Summary = () => {
   // States
+  const { state, dispatch } = useCustomContext();
   const [personName, setPersonName] = useState([]);
+
+  // Effects
   useEffect(() => {
     const personNameObj = {};
-    Object.keys(groups).forEach((groupName) => {
+    Object.keys(state.groups).forEach((groupName) => {
       const personArr = groupName.split(",");
       for (let i = 0; i < personArr.length; i++) {
         personNameObj[personArr[i].toLowerCase()] = 0;
@@ -29,14 +32,14 @@ const Summary = ({ orderDetails, groups }) => {
     });
 
     setPersonName(Object.keys(personNameObj));
-  }, [groups]);
+  }, [state.groups]);
 
   // Handlers
   const getTotalGroupsContribution = () => {
     let totalPrice = 0;
-    const groupNames = Object.keys(groups);
+    const groupNames = Object.keys(state.groups);
     for (let i = 0; i < groupNames.length; i++) {
-      totalPrice += groups[groupNames[i]].reduce((a, b) => {
+      totalPrice += state.groups[groupNames[i]].reduce((a, b) => {
         return a + b["price"];
       }, 0);
     }
@@ -46,12 +49,12 @@ const Summary = ({ orderDetails, groups }) => {
 
   const getIndividualContribution = (person) => {
     let totalIndividualCount = 0;
-    Object.keys(groups)
+    Object.keys(state.groups)
       .filter((group) => group.toLowerCase().includes(person))
       .forEach((group) => {
         const totalCount = group.split(",").length;
-        for (let i = 0; i < groups[group].length; i++) {
-          totalIndividualCount += groups[group][i].price / totalCount;
+        for (let i = 0; i < state.groups[group].length; i++) {
+          totalIndividualCount += state.groups[group][i].price / totalCount;
         }
       });
 
@@ -97,7 +100,7 @@ const Summary = ({ orderDetails, groups }) => {
                     }}
                   >
                     <TableCell>Order Name</TableCell>
-                    <TableCell>{orderDetails.orderName}</TableCell>
+                    <TableCell>{state.orderDetails.orderName}</TableCell>
                   </TableRow>
                   <TableRow
                     className="table_body"
@@ -107,7 +110,7 @@ const Summary = ({ orderDetails, groups }) => {
                     }}
                   >
                     <TableCell>Order Date</TableCell>
-                    <TableCell>{orderDetails.date}</TableCell>
+                    <TableCell>{state.orderDetails.date}</TableCell>
                   </TableRow>
                   <TableRow
                     className="table_body"
@@ -119,7 +122,7 @@ const Summary = ({ orderDetails, groups }) => {
                     <TableCell>
                       Sub Total (Excluding all taxes and fees)
                     </TableCell>
-                    <TableCell>{orderDetails.subTotal || 0}</TableCell>
+                    <TableCell>{state.orderDetails.subTotal || 0}</TableCell>
                   </TableRow>
                   <TableRow
                     className="table_body"
@@ -129,7 +132,7 @@ const Summary = ({ orderDetails, groups }) => {
                     }}
                   >
                     <TableCell>Savings</TableCell>
-                    <TableCell>-{orderDetails.savings || 0}</TableCell>
+                    <TableCell>-{state.orderDetails.savings || 0}</TableCell>
                   </TableRow>
                   <TableRow
                     className="table_body"
@@ -139,7 +142,7 @@ const Summary = ({ orderDetails, groups }) => {
                     }}
                   >
                     <TableCell>Tax</TableCell>
-                    <TableCell>{orderDetails.tax || 0}</TableCell>
+                    <TableCell>{state.orderDetails.tax || 0}</TableCell>
                   </TableRow>
                   <TableRow
                     className="table_body"
@@ -149,7 +152,7 @@ const Summary = ({ orderDetails, groups }) => {
                     }}
                   >
                     <TableCell>Delivery Fee</TableCell>
-                    <TableCell>{orderDetails.deliveryFee || 0}</TableCell>
+                    <TableCell>{state.orderDetails.deliveryFee || 0}</TableCell>
                   </TableRow>
                   <TableRow
                     className="table_body"
@@ -159,7 +162,7 @@ const Summary = ({ orderDetails, groups }) => {
                     }}
                   >
                     <TableCell>Delivery Tip</TableCell>
-                    <TableCell>{orderDetails.tip || 0}</TableCell>
+                    <TableCell>{state.orderDetails.tip || 0}</TableCell>
                   </TableRow>
                   <TableRow
                     className="table_body"
@@ -169,7 +172,7 @@ const Summary = ({ orderDetails, groups }) => {
                     }}
                   >
                     <TableCell>Order Total</TableCell>
-                    <TableCell>{orderDetails.total || 0}</TableCell>
+                    <TableCell>{state.orderDetails.total || 0}</TableCell>
                   </TableRow>
                   <TableRow
                     className="table_body"
@@ -181,7 +184,8 @@ const Summary = ({ orderDetails, groups }) => {
                     <TableCell>Split Total</TableCell>
                     <TableCell>{getTotalGroupsContribution() || 0}</TableCell>
                   </TableRow>
-                  {orderDetails.total - getTotalGroupsContribution() > 0 ? (
+                  {state.orderDetails.total - getTotalGroupsContribution() >
+                  0 ? (
                     <TableRow
                       className="table_body"
                       key={"table_summary_rem_balance"}
@@ -192,7 +196,8 @@ const Summary = ({ orderDetails, groups }) => {
                       <TableCell>Remaining</TableCell>
                       <TableCell sx={{ fontWeight: "bold" }}>
                         {(
-                          orderDetails.total - getTotalGroupsContribution()
+                          state.orderDetails.total -
+                          getTotalGroupsContribution()
                         ).toFixed(4)}
                       </TableCell>
                     </TableRow>
@@ -262,7 +267,7 @@ const Summary = ({ orderDetails, groups }) => {
           </CardContent>
         </Card>
       </Grid>
-      {Object.keys(groups).map((groupName) => {
+      {Object.keys(state.groups).map((groupName) => {
         return (
           <Grid key={groupName} xs={12} md={4} sx={{ display: "flex" }}>
             <Card
@@ -302,7 +307,7 @@ const Summary = ({ orderDetails, groups }) => {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {groups[groupName].map((row) => (
+                      {state.groups[groupName].map((row) => (
                         <TableRow
                           className="table_body"
                           key={row.idx}
@@ -329,7 +334,7 @@ const Summary = ({ orderDetails, groups }) => {
                         <TableCell className="table_body_last_row">-</TableCell>
                         <TableCell className="table_body_last_row">-</TableCell>
                         <TableCell className="table_body_last_row">
-                          {groups[groupName]
+                          {state.groups[groupName]
                             .reduce((a, b) => {
                               return a + b["price"];
                             }, 0)

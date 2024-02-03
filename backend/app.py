@@ -8,6 +8,7 @@ from backend.helpers.helpers import (
     add_or_update_walmart_order,
     add_or_update_walmart_order_processed_items,
     add_or_update_walmart_order_raw_items,
+    clear_walmart_order_processed_items,
     fetch_processed_order_details,
 )
 from .WalmartItem.WalmartItem import WalmartItem
@@ -167,12 +168,21 @@ def upload_processed_order():
 
     orderID = reqdata["orderID"]
     orderDate = reqdata["orderDate"]
+    groupUserIds = reqdata["groupToIds"]
     del reqdata["orderID"]
     del reqdata["orderDate"]
 
+    clear_walmart_order_processed_items(orderID)
     for groupName in reqdata.keys():
-        groupID = add_or_update_walmart_groups(orderID, groupName)
-        add_or_update_walmart_order_processed_items(groupID, reqdata[groupName])
+        if groupName == "groupToIds":
+            continue
+
+        groupID = add_or_update_walmart_groups(
+            orderID, groupName, groupUserIds[groupName]
+        )
+        add_or_update_walmart_order_processed_items(
+            orderID, groupID, reqdata[groupName]
+        )
 
     return {"message": "successfully processed items"}
 

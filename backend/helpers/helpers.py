@@ -78,7 +78,7 @@ def add_or_update_walmart_order_raw_items(orderID, ordersArr):
     return True
 
 
-def add_or_update_walmart_groups(orderID, name):
+def add_or_update_walmart_groups(orderID, name, groupUserIds):
     existing_group = db.session.execute(
         select(WalmartOrderGroups).filter(
             (WalmartOrderGroups.walmart_order_id == orderID),
@@ -87,7 +87,9 @@ def add_or_update_walmart_groups(orderID, name):
     ).fetchone()
 
     if existing_group is None:
-        new_group = WalmartOrderGroups(walmart_order_id=orderID, name=name)
+        new_group = WalmartOrderGroups(
+            walmart_order_id=orderID, name=name, groupUserIds=groupUserIds
+        )
         db.session.add(new_group)
         db.session.commit()
         db.session.refresh(new_group)
@@ -96,15 +98,20 @@ def add_or_update_walmart_groups(orderID, name):
     return existing_group[0].ID
 
 
-def add_or_update_walmart_order_processed_items(groupID, ordersArr):
+def clear_walmart_order_processed_items(orderID):
     db.session.execute(
         db.delete(WalmartOrderProcessedItems).where(
-            (WalmartOrderProcessedItems.walmart_order_group_id == groupID),
+            (WalmartOrderProcessedItems.walmart_order_id == orderID),
         )
     )
 
+    db.session.commit()
+
+
+def add_or_update_walmart_order_processed_items(orderID, groupID, ordersArr):
     for order in ordersArr:
         walmartProcessedItem = WalmartOrderProcessedItems(
+            walmart_order_id=orderID,
             walmart_order_group_id=groupID,
             name=order["name"],
             status=order["status"],
@@ -176,7 +183,6 @@ def fetch_processed_order_details(orderID, orderDate):
 def add_or_update_users(name, email):
     existing_user = db.session.execute(
         select(Users).filter(
-            (Users.name == name),
             (Users.email == email),
         )
     ).fetchone()
