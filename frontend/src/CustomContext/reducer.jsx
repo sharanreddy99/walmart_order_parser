@@ -1,4 +1,5 @@
-const reducer = (state, action) => {
+const singleReducer = (state, action) => {
+  console.log(action);
   // Users
   if (action.type == "ADD_USER") {
     const newUser = action.payload;
@@ -65,6 +66,11 @@ const reducer = (state, action) => {
     return { ...state, onboardingData: action.payload };
   }
 
+  // RegularModal
+  if (action.type == "SET_REGULAR_MODAL") {
+    return { ...state, regularModal: action.payload };
+  }
+
   // File Upload
   if (action.type == "SET_SELECTED_FILE") {
     return { ...state, selectedFile: action.payload };
@@ -72,18 +78,35 @@ const reducer = (state, action) => {
     return { ...state, isFileUploaded: action.payload };
   }
 
+  // Split Fetched
+  if (action.type == "IS_SPLIT_FETCHED") {
+    return { ...state, isSplitFetched: action.payload };
+  }
+
   // Order Details
   if (action.type == "SET_ORDER_DETAILS") {
     return {
       ...state,
       orderDetails: action.payload,
-      isOrderSplitChanged: true,
     };
   } else if (action.type == "SET_ORDERS_CHANGE_STATUS") {
     return { ...state, isOrderSplitChanged: action.payload };
   }
 
   throw new Error("State Error");
+};
+
+const reducer = (state, actionArr) => {
+  let newState = { ...state };
+  if (Array.isArray(actionArr)) {
+    for (let i = 0; i < actionArr.length; i++) {
+      newState = singleReducer(newState, actionArr[i]);
+    }
+  } else {
+    newState = singleReducer(newState, actionArr);
+  }
+
+  return newState;
 };
 
 const defaultState = {
@@ -101,6 +124,12 @@ const defaultState = {
   },
   isOrderSplitChanged: false,
   isFileUploaded: false,
+  isSplitFetched: false,
+  regularModal: {
+    title: "",
+    body: "",
+    isShown: false,
+  },
 };
 
 export { reducer, defaultState };

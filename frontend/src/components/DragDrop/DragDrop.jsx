@@ -14,6 +14,7 @@ import QuantityModal from "../Modal/QuantityModal";
 import { sortByKey } from "../../utils";
 import { setCurrentOnboardingConfig } from "../../config/onboarding";
 import { useCustomContext } from "../../CustomContext/CustomContext";
+import RegularModal from "../Modal/RegularModal";
 
 const DragDrop = () => {
   // States
@@ -114,10 +115,6 @@ const DragDrop = () => {
       "idx",
       "add"
     );
-    dispatch({
-      type: "SET_DEFAULT_GROUPS",
-      payload: { ...state.groups, [groupName]: updatedGroups },
-    });
 
     const updatedOrders = findUpdateOrReplace(
       state.orderDetails.ordersArr,
@@ -127,10 +124,17 @@ const DragDrop = () => {
       "subtract"
     );
 
-    dispatch({
-      type: "SET_ORDER_DETAILS",
-      payload: { ...state.orderDetails, ordersArr: updatedOrders },
-    });
+    dispatch([
+      {
+        type: "SET_DEFAULT_GROUPS",
+        payload: { ...state.groups, [groupName]: updatedGroups },
+      },
+      {
+        type: "SET_ORDER_DETAILS",
+        payload: { ...state.orderDetails, ordersArr: updatedOrders },
+      },
+      { type: "SET_ORDERS_CHANGE_STATUS", payload: true },
+    ]);
   };
 
   const handleDragOver = (e) => {
@@ -222,6 +226,7 @@ const DragDrop = () => {
 
   return (
     <Container className="App" maxWidth={false}>
+      <RegularModal />
       <QuantityModal
         modal={modal}
         setModal={setModal}

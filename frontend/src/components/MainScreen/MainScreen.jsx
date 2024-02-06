@@ -21,6 +21,32 @@ const MainScreen = () => {
 
   // effects
   useEffect(() => {
+    if (!state.isFileUploaded && !state.isSplitFetched) {
+      let dispatchArr = [];
+
+      if (localStorage.getItem("users")) {
+        dispatchArr.push({
+          type: "SET_DEFAULT_USERS",
+          payload: JSON.parse(localStorage.getItem("users")),
+        });
+      }
+
+      if (localStorage.getItem("groupNames")) {
+        dispatchArr.push({
+          type: "SET_DEFAULT_GROUPS",
+          payload: JSON.parse(localStorage.getItem("groupNames")).reduce(
+            (obj, key) => {
+              obj[key] = [];
+              return obj;
+            },
+            {}
+          ),
+        });
+      }
+
+      dispatch(dispatchArr);
+    }
+
     if (localStorage.getItem("onboardingStep") == null) {
       setCurrentOnboardingConfig(0, (data) => {
         dispatch({ type: "SET_ONBOARDING_DATA", payload: data });
@@ -37,11 +63,15 @@ const MainScreen = () => {
   }, []);
 
   useEffect(() => {
-    if (state.orderDetails.ordersArr.length == 0 && state.isOrderSplitChanged) {
+    if (
+      (state.isSplitFetched || state.isFileUploaded) &&
+      state.orderDetails.ordersArr.length == 0 &&
+      state.isOrderSplitChanged
+    ) {
       postProcessedGroupWiseOrders();
     }
 
-    if (!state.isFileUploaded) {
+    if (!state.isFileUploaded && !state.isSplitFetched) {
       const groupNames = localStorage.getItem("groupNames");
       if (groupNames) {
         const groupArr = JSON.parse(groupNames);
@@ -68,9 +98,14 @@ const MainScreen = () => {
 
         const tempUsers = state.users.filter((user) => user.name == temp);
         if (tempUsers.length == 0) {
-          console.log(
-            "One of the users is not signed in. Cannot modify the order"
-          );
+          dispatch({
+            type: "SET_REGULAR_MODAL",
+            payload: {
+              isShown: true,
+              title: "USER NOT SIGNED IN!!",
+              body: "<b>One of the users involved in the transaction is not added / signed in. Please check and try again.</b>",
+            },
+          });
           throw new Error("Unable to modify");
         } else {
           userIds.push(tempUsers[0].userID);

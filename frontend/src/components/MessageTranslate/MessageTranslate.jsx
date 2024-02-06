@@ -98,8 +98,11 @@ const MessageTranslate = () => {
         widgetButton.style.transition = "";
       });
 
-      dispatch({ type: "SET_DEFAULT_GROUPS", payload: updatedGroups });
-      dispatch({ type: "SET_ORDER_DETAILS", payload: updatedOrders });
+      dispatch([
+        { type: "SET_DEFAULT_GROUPS", payload: updatedGroups },
+        { type: "SET_ORDER_DETAILS", payload: updatedOrders },
+        { type: "SET_ORDERS_CHANGE_STATUS", payload: true },
+      ]);
     }, 1000);
   };
 

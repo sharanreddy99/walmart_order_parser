@@ -38,20 +38,21 @@ const FileUpload = () => {
         dispatch({ type: "SET_ONBOARDING_DATA", payload: data });
       });
 
-      dispatch({ type: "SET_SELECTED_FILE", payload: "" });
-      dispatch({ type: "IS_FILE_UPLOADED", payload: true });
-
-      dispatch({
-        type: "SET_DEFAULT_GROUPS",
-        payload: state.groupsList.reduce((obj, key) => {
-          obj[key] = [];
-          return obj;
-        }, {}),
-      });
-
       sortByKey(resp.data.ordersArr);
 
-      dispatch({ type: "SET_ORDER_DETAILS", payload: resp.data });
+      dispatch([
+        { type: "SET_SELECTED_FILE", payload: "" },
+        { type: "IS_FILE_UPLOADED", payload: true },
+        { type: "IS_SPLIT_FETCHED", payload: false },
+        {
+          type: "SET_DEFAULT_GROUPS",
+          payload: state.groupsList.reduce((obj, key) => {
+            obj[key] = [];
+            return obj;
+          }, {}),
+        },
+        { type: "SET_ORDER_DETAILS", payload: resp.data },
+      ]);
     } else {
       alert("Please choose a file");
     }

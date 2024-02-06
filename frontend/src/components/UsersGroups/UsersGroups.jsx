@@ -15,19 +15,18 @@ const UserGroups = () => {
 
   // Effects
   useEffect(() => {
-    if (
-      state.orderDetails.ordersArr.length == 0 &&
-      Object.keys(state.orderDetails).length == 1
-    ) {
+    if (!state.isFileUploaded && !state.isSplitFetched) {
+      let dispatchArr = [];
+
       if (localStorage.getItem("users")) {
-        dispatch({
+        dispatchArr.push({
           type: "SET_DEFAULT_USERS",
           payload: JSON.parse(localStorage.getItem("users")),
         });
       }
 
       if (localStorage.getItem("groupNames")) {
-        dispatch({
+        dispatchArr.push({
           type: "SET_DEFAULT_GROUPS",
           payload: JSON.parse(localStorage.getItem("groupNames")).reduce(
             (obj, key) => {
@@ -38,6 +37,8 @@ const UserGroups = () => {
           ),
         });
       }
+
+      dispatch(dispatchArr);
     }
   }, []);
 

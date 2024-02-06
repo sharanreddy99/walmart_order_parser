@@ -27,6 +27,16 @@ const SignedUsersComponent = () => {
         >
           Signed In Users
         </Typography>
+        <Typography
+          sx={{
+            fontSize: 15,
+          }}
+          gutterBottom
+        >
+          After signing in, tap on the user cards to add / drop them from the
+          group displayed in the textbox below and create as many groups as
+          required to assign the items in the walmart order to respective group.
+        </Typography>
         {state.users.map((user, index) => {
           return (
             <Card

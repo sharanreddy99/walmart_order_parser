@@ -56,6 +56,17 @@ const SignupComponent = () => {
         >
           Signin / Signup
         </Typography>
+
+        <Typography
+          sx={{
+            fontSize: 15,
+          }}
+          gutterBottom
+        >
+          Add a Name and an Email-ID to uniquely identify the user among others
+          which will help in analyzing and generating meaningful insights in the
+          future updates.
+        </Typography>
         <Grid
           item
           style={{

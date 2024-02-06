@@ -21,11 +21,15 @@ const FetchPastSplit = () => {
       ).format("YYYY-MM-DD")}`
     );
 
-    dispatch({ type: "SET_DEFAULT_GROUPS", payload: resp.data.groupsInfo });
-    dispatch({
-      type: "SET_ORDER_DETAILS",
-      payload: { ...resp.data, ordersArr: [] },
-    });
+    dispatch([
+      { type: "SET_DEFAULT_GROUPS", payload: resp.data.groupsInfo },
+      {
+        type: "SET_ORDER_DETAILS",
+        payload: { ...resp.data, ordersArr: [] },
+      },
+      { type: "IS_FILE_UPLOADED", payload: false },
+      { type: "IS_SPLIT_FETCHED", payload: true },
+    ]);
   };
 
   return (
