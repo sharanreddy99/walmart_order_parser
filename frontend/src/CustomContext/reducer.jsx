@@ -1,5 +1,4 @@
 const singleReducer = (state, action) => {
-  console.log(action);
   // Users
   if (action.type == "ADD_USER") {
     const newUser = action.payload;
