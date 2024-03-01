@@ -21,6 +21,12 @@ from PyPDF2 import PdfReader
 from . import app, db
 
 
+class InvalidExtractionException(Exception):
+    """Base class for other custom exceptions"""
+
+    pass
+
+
 # Routes
 @app.route("/", methods=["GET", "POST"])
 @cross_origin(supports_credentials=True)
@@ -31,106 +37,124 @@ def healthcheck():
 @app.route("/upload_order", methods=["POST"])
 @cross_origin(supports_credentials=True)
 def upload_order():
-    if "order" not in request.files:
-        return "Didnt receive order document"
+    try:
+        if "order" not in request.files:
+            return "Didnt receive order document"
 
-    # save uploaded file
-    file = request.files["order"]
-    file.save("./order.pdf")
+        # save uploaded file
+        file = request.files["order"]
+        file.save("./order.pdf")
 
-    # creating a pdf reader object
-    reader = PdfReader("./order.pdf")
+        # creating a pdf reader object
+        reader = PdfReader("./order.pdf")
 
-    # printing number of pages in pdf file
-    for page in reader.pages:
-        # extracting text from page
-        text = page.extract_text().split("\n")
         objectArr = []
         object = {}
         orderDate = None
+        # printing number of pages in pdf file
+        for page in reader.pages:
+            # extracting text from page
+            text = page.extract_text().split("\n")
 
-        for input_string in text:
-            result = re.search(
-                r"^(.*?)[ ]*(unavailable|shopped|weight-adjusted|substitutions|)[ ]*Qty[ ]*([0-9]+)[ ]*\$([0-9\.]+)",
-                input_string,
-                re.IGNORECASE,
-            )
-            if result != None:
-                resultGroup = result.groups()
-                obj = WalmartItem(resultGroup[0])
-                obj.status = resultGroup[1]
-                obj.quantity = float(resultGroup[2])
-                obj.price = float(resultGroup[3])
-                obj.perItemCost = obj.price / obj.quantity
-                if obj.status == "Unavailable":
-                    obj.price = 0
-                    obj.perItemCost = 0
+            for input_string in text:
+                result = re.search(
+                    r"^(.+?)[ ]*(unavailable|shopped|weight-adjusted|substitutions)[ ]*(?:Qty[ ]*([0-9]+))?[ ]*\$([0-9\.]+)",
+                    input_string,
+                    re.IGNORECASE,
+                )
+                if result != None:
+                    resultGroup = result.groups()
 
-                objectArr.append(obj)
+                    obj = WalmartItem(resultGroup[0])
+                    obj.status = resultGroup[1]
+                    if obj.status == None:
+                        continue
 
-            result = re.search(r"order# ([\d-]+)", input_string, re.IGNORECASE)
-            if result != None:
-                object["orderName"] = result.groups()[0]
+                    obj.quantity = resultGroup[2]
+                    if obj.quantity is None:
+                        obj.quantity = float(1)
+                    else:
+                        obj.quantity = float(obj.quantity)
 
-            result = re.search(
-                r".*?((Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[ ]{1}([\d]{2}), ([\d]{4})) o\s*r\s*d\s*e\s*r",
-                input_string,
-                re.IGNORECASE,
-            )
-            if result != None:
-                monthMap = {
-                    "Jan": "01",
-                    "Feb": "02",
-                    "Mar": "03",
-                    "Apr": "04",
-                    "May": "05",
-                    "Jun": "06",
-                    "Jul": "07",
-                    "Aug": "08",
-                    "Sep": "09",
-                    "Oct": "10",
-                    "Nov": "11",
-                    "Dec": "12",
-                }
-                month, day, year = result.groups()[1:4]
-                month = monthMap[month]
-                orderDate = "{0}-{1}-{2}".format(year, month, day)
+                    obj.price = float(resultGroup[3])
+                    obj.perItemCost = obj.price / obj.quantity
+                    if obj.status == "Unavailable":
+                        obj.price = 0
+                        obj.perItemCost = 0
 
-            result = re.search(r"subtotal[ ]*\$([\d\.]+)", input_string, re.IGNORECASE)
-            if result != None:
-                object["subTotal"] = result.groups()[0]
+                    objectArr.append(obj)
 
-            result = re.search(
-                r"savings[ ]*[-]*\$([\d\.]+)", input_string, re.IGNORECASE
-            )
-            if result != None:
-                object["savings"] = result.groups()[0]
+                result = re.search(r"order# ([\d-]+)", input_string, re.IGNORECASE)
+                if result != None:
+                    object["orderName"] = result.groups()[0]
 
-            result = re.search(r"tax[ ]*[-]*\$([\d\.]+)", input_string, re.IGNORECASE)
-            if result != None:
-                object["tax"] = result.groups()[0]
+                result = re.search(
+                    r".*?((Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[ ]{1}([\d]{2}), ([\d]{4})) o\s*r\s*d\s*e\s*r",
+                    input_string,
+                    re.IGNORECASE,
+                )
+                if result != None:
+                    monthMap = {
+                        "Jan": "01",
+                        "Feb": "02",
+                        "Mar": "03",
+                        "Apr": "04",
+                        "May": "05",
+                        "Jun": "06",
+                        "Jul": "07",
+                        "Aug": "08",
+                        "Sep": "09",
+                        "Oct": "10",
+                        "Nov": "11",
+                        "Dec": "12",
+                    }
+                    month, day, year = result.groups()[1:4]
+                    month = monthMap[month]
+                    orderDate = "{0}-{1}-{2}".format(year, month, day)
 
-            result = re.search(r"total[ ]*[-]*\$([\d\.]+)", input_string, re.IGNORECASE)
-            if result != None:
-                object["total"] = result.groups()[0]
+                result = re.search(
+                    r"subtotal[ ]*\$([\d\.]+)", input_string, re.IGNORECASE
+                )
+                if result != None:
+                    object["subTotal"] = result.groups()[0]
 
-            result = re.search(
-                r"driver tip[ ]*[-]*\$([\d\.]+)", input_string, re.IGNORECASE
-            )
-            if result != None:
-                object["driverTip"] = result.groups()[0]
+                result = re.search(
+                    r"savings[ ]*[-]*\$([\d\.]+)", input_string, re.IGNORECASE
+                )
+                if result != None:
+                    object["savings"] = result.groups()[0]
 
-            result = re.search(
-                "free delivery.*?(\$[0-9\.]+)(\$[0-9\.]+)", input_string, re.IGNORECASE
-            )
-            if result is not None:
-                val1 = result.groups()[0]
-                val2 = result.groups()[1]
+                result = re.search(
+                    r"tax[ ]*[-]*\$([\d\.]+)", input_string, re.IGNORECASE
+                )
+                if result != None:
+                    object["tax"] = result.groups()[0]
 
-                if val2 != "":
-                    object["deliveryFee"] = val2.lstrip("$")
-                else:
-                    object["deliveryFee"] = val1.lstrip("$")
+                result = re.search(
+                    r"total[ ]*[-]*\$([\d\.]+)", input_string, re.IGNORECASE
+                )
+                if result != None:
+                    object["total"] = result.groups()[0]
+
+                result = re.search(
+                    r"driver tip[ ]*[-]*\$([\d\.]+)", input_string, re.IGNORECASE
+                )
+                if result != None:
+                    object["driverTip"] = result.groups()[0]
+
+                result = re.search(
+                    "free delivery.*?(\$[0-9\.]+)(\$[0-9\.]+)",
+                    input_string,
+                    re.IGNORECASE,
+                )
+                if result is not None:
+                    val1 = result.groups()[0]
+                    val2 = result.groups()[1]
+
+                    if val2 != "":
+                        object["deliveryFee"] = val2.lstrip("$")
+                    else:
+                        object["deliveryFee"] = val1.lstrip("$")
 
         obj = WalmartOrder(object["orderName"])
         obj.date = orderDate
@@ -142,67 +166,86 @@ def upload_order():
         obj.tip = object.get("driverTip", 0)
         obj.ordersArr = objectArr
 
-    add_or_update_walmart_order(
-        orderID=obj.orderName,
-        date=orderDate,
-        subTotal=obj.subTotal,
-        savings=obj.savings,
-        total=obj.total,
-        deliveryFee=obj.deliveryFee,
-        tax=obj.tax,
-        tip=obj.tip,
-    )
-    add_or_update_walmart_order_raw_items(obj.orderName, obj.ordersArr)
+        # add_or_update_walmart_order(
+        #     orderID=obj.orderName,
+        #     date=orderDate,
+        #     subTotal=obj.subTotal,
+        #     savings=obj.savings,
+        #     total=obj.total,
+        #     deliveryFee=obj.deliveryFee,
+        #     tax=obj.tax,
+        #     tip=obj.tip,
+        # )
+        # add_or_update_walmart_order_raw_items(obj.orderName, obj.ordersArr)
 
-    resp = obj.toJSON(includeTax=True)
+        resp = obj.toJSON(includeTax=True)
 
-    return resp
+        return resp
+
+    except InvalidExtractionException as e:
+        return (
+            "Could not parse the PDF completely. Please inform the developer regarding the issue.",
+            500,
+        )
+    except Exception as e:
+        return "API Failed. Please verify the data.", 500
 
 
 @app.route("/upload_processed_order", methods=["POST"])
 @cross_origin(supports_credentials=True)
 def upload_processed_order():
-    reqdata = request.get_json()
-    if "orderID" not in reqdata:
-        return {"message": "Invalid Order"}
+    try:
+        reqdata = request.get_json()
+        if "orderID" not in reqdata:
+            return {"message": "Invalid Order"}
 
-    orderID = reqdata["orderID"]
-    orderDate = reqdata["orderDate"]
-    groupUserIds = reqdata["groupToIds"]
-    del reqdata["orderID"]
-    del reqdata["orderDate"]
+        orderID = reqdata["orderID"]
+        orderDate = reqdata["orderDate"]
+        groupUserIds = reqdata["groupToIds"]
+        del reqdata["orderID"]
+        del reqdata["orderDate"]
 
-    clear_walmart_order_processed_items(orderID)
-    for groupName in reqdata.keys():
-        if groupName == "groupToIds":
-            continue
+        clear_walmart_order_processed_items(orderID)
+        for groupName in reqdata.keys():
+            if groupName == "groupToIds":
+                continue
 
-        groupID = add_or_update_walmart_groups(
-            orderID, groupName, groupUserIds[groupName]
-        )
-        add_or_update_walmart_order_processed_items(
-            orderID, groupID, reqdata[groupName]
-        )
+            groupID = add_or_update_walmart_groups(
+                orderID, groupName, groupUserIds[groupName]
+            )
+            add_or_update_walmart_order_processed_items(
+                orderID, groupID, reqdata[groupName]
+            )
 
-    return {"message": "successfully processed items"}
+        return {"message": "successfully processed items"}
+
+    except Exception as e:
+        return "API Failed. Please verify the data.", 500
 
 
 @app.route("/fetch_processed_order", methods=["GET"])
 @cross_origin(supports_credentials=True)
 def fetch_processed_order():
-    orderID = request.args.get("orderID")
-    orderDate = request.args.get("orderDate")
+    try:
+        orderID = request.args.get("orderID")
+        orderDate = request.args.get("orderDate")
 
-    processedOrders = fetch_processed_order_details(orderID, orderDate)
-    return processedOrders
+        processedOrders = fetch_processed_order_details(orderID, orderDate)
+        return processedOrders
+    except Exception as e:
+        return "API Failed. Please verify the data.", 500
 
 
 @app.route("/user_auth", methods=["POST"])
 @cross_origin(supports_credentials=True)
 def user_auth():
-    reqdata = request.get_json()
-    name = reqdata["name"]
-    email = reqdata["email"]
+    try:
+        reqdata = request.get_json()
+        name = reqdata["name"]
+        email = reqdata["email"]
 
-    userID = add_or_update_users(name, email)
-    return {"userID": userID, "name": name, "email": email}
+        userID = add_or_update_users(name, email)
+        return {"userID": userID, "name": name, "email": email}
+
+    except Exception as e:
+        return "API Failed. Please verify the data.", 500
