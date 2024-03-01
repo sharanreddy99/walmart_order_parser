@@ -166,17 +166,17 @@ def upload_order():
         obj.tip = object.get("driverTip", 0)
         obj.ordersArr = objectArr
 
-        # add_or_update_walmart_order(
-        #     orderID=obj.orderName,
-        #     date=orderDate,
-        #     subTotal=obj.subTotal,
-        #     savings=obj.savings,
-        #     total=obj.total,
-        #     deliveryFee=obj.deliveryFee,
-        #     tax=obj.tax,
-        #     tip=obj.tip,
-        # )
-        # add_or_update_walmart_order_raw_items(obj.orderName, obj.ordersArr)
+        add_or_update_walmart_order(
+            orderID=obj.orderName,
+            date=orderDate,
+            subTotal=obj.subTotal,
+            savings=obj.savings,
+            total=obj.total,
+            deliveryFee=obj.deliveryFee,
+            tax=obj.tax,
+            tip=obj.tip,
+        )
+        add_or_update_walmart_order_raw_items(obj.orderName, obj.ordersArr)
 
         resp = obj.toJSON(includeTax=True)
 
