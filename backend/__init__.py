@@ -17,6 +17,7 @@ CORS(app, support_credentials=True)
 
 # Set up logging to a file
 logging.basicConfig(level=logging.INFO)
+os.makedirs(os.path.dirname("logs"), exist_ok=True)
 handler = RotatingFileHandler("logs/app.log", maxBytes=10000, backupCount=3)
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
