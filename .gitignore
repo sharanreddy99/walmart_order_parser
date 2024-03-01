@@ -28,4 +28,4 @@ backend/*.pdf
 backend/*.xml
 backend/**/__pycache__
 backend/.vscode
-backend/logs
+backend/logs/**
