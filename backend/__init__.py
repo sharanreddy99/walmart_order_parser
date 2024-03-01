@@ -16,25 +16,25 @@ app = Flask(__name__)
 CORS(app, support_credentials=True)
 
 # Set up logging to a file
-logging.basicConfig(level=logging.INFO)
-os.makedirs(os.path.dirname("logs"), exist_ok=True)
-handler = RotatingFileHandler("logs/app.log", maxBytes=10000, backupCount=3)
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
-logger.addHandler(handler)
+# logging.basicConfig(level=logging.INFO)
+# os.makedirs(os.path.dirname("logs"), exist_ok=True)
+# handler = RotatingFileHandler("logs/app.log", maxBytes=10000, backupCount=3)
+# logger = logging.getLogger(__name__)
+# logger.setLevel(logging.INFO)
+# logger.addHandler(handler)
 
 
-@app.before_request
-def log_request_info():
-    if request.method in ["POST", "PUT", "PATCH"]:
-        # Assuming the body is JSON. You might want to handle different data formats (or errors) depending on your use case.
-        data = request.get_json(force=True) if request.is_json else "Not a JSON request"
-        data_str = json.dumps(data)
-    else:
-        data_str = "No body for GET request"
+# @app.before_request
+# def log_request_info():
+#     if request.method in ["POST", "PUT", "PATCH"]:
+#         # Assuming the body is JSON. You might want to handle different data formats (or errors) depending on your use case.
+#         data = request.get_json(force=True) if request.is_json else "Not a JSON request"
+#         data_str = json.dumps(data)
+#     else:
+#         data_str = "No body for GET request"
 
-    log_message = f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - Method: {request.method}, URL: {request.url}, Body: {data_str}"
-    logger.info(log_message)
+#     log_message = f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - Method: {request.method}, URL: {request.url}, Body: {data_str}"
+#     logger.info(log_message)
 
 
 # DB_SETUP AND CONFIG
