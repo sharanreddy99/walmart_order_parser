@@ -113,34 +113,40 @@ def upload_order():
                     orderDate = "{0}-{1}-{2}".format(year, month, day)
 
                 result = re.search(
-                    r"subtotal[ ]*\$([\d\.]+)", input_string, re.IGNORECASE
+                    r"subtotal[ ]*[-]*\$([\d\s]*\.?[\s*\d]+)",
+                    input_string,
+                    re.IGNORECASE,
                 )
                 if result != None:
-                    object["subTotal"] = result.groups()[0]
+                    object["subTotal"] = result.groups()[0].replace(" ", "")
+                else:
+                    result = re.search(
+                        r"total[ ]*[-]*\$([\d\s]*\.?[\s*\d]+)",
+                        input_string,
+                        re.IGNORECASE,
+                    )
+                    if result != None:
+                        object["total"] = result.groups()[0].replace(" ", "")
 
                 result = re.search(
                     r"savings[ ]*[-]*\$([\d\.]+)", input_string, re.IGNORECASE
                 )
                 if result != None:
-                    object["savings"] = result.groups()[0]
+                    object["savings"] = result.groups()[0].replace(" ", "")
 
                 result = re.search(
-                    r"tax[ ]*[-]*\$([\d\.]+)", input_string, re.IGNORECASE
+                    r"tax[ ]*[-]*\$([\d\s]*\.?[\s*\d]+)", input_string, re.IGNORECASE
                 )
                 if result != None:
-                    object["tax"] = result.groups()[0]
+                    object["tax"] = result.groups()[0].replace(" ", "")
 
                 result = re.search(
-                    r"total[ ]*[-]*\$([\d\.]+)", input_string, re.IGNORECASE
+                    r"driver tip[ ]*[-]*\$([\d\s]*\.?[\s*\d]+)",
+                    input_string,
+                    re.IGNORECASE,
                 )
                 if result != None:
-                    object["total"] = result.groups()[0]
-
-                result = re.search(
-                    r"driver tip[ ]*[-]*\$([\d\.]+)", input_string, re.IGNORECASE
-                )
-                if result != None:
-                    object["driverTip"] = result.groups()[0]
+                    object["driverTip"] = result.groups()[0].replace(" ", "")
 
                 result = re.search(
                     "free delivery.*?(\$[0-9\.]+)(\$[0-9\.]+)",
