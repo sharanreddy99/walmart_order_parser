@@ -14,7 +14,7 @@
    <img alt="GitHub top language" src="https://img.shields.io/github/languages/top/sharanreddy99/walmart_order_parser">
    <img alt="GitHub code size in bytes" src="https://img.shields.io/github/languages/code-size/sharanreddy99/walmart_order_parser">
 
-<p>
+</p>
 <p align="center">
 	<!-- default option, no dependency badges. -->
 </p>
