@@ -8,10 +8,12 @@
     <em>Effortlessly process Walmart order receipts, extract item details from PDFs, and intuitively allocate items to individuals or groups via drag-and-drop. Seamlessly split quantities among participants, auto-summarize group costs, and provide detailed insights into each participant's ordered items and share of the total bill.</em>
 </p>
 <p align="center">
-	<img src="https://img.shields.io/github/license/badges/shields?style=default&logo=opensourceinitiative&logoColor=white&color=0080ff" alt="license">
-	<img src="https://img.shields.io/github/last-commit/badges/shields?style=default&logo=git&logoColor=white&color=0080ff" alt="last-commit">
-	<img src="https://img.shields.io/github/languages/top/badges/shields?style=default&color=0080ff" alt="repo-top-language">
-	<img src="https://img.shields.io/github/languages/count/badges/shields?style=default&color=0080ff" alt="repo-language-count">
+	<img src="https://img.shields.io/github/commit-activity/m/sharanreddy99/walmart_order_parser" alt="last-commit">
+	<img src="https://img.shields.io/github/created-at/sharanreddy99/walmart_order_parser" alt="created_at">
+   <img alt="GitHub language count" src="https://img.shields.io/github/languages/count/sharanreddy99/walmart_order_parser">
+   <img alt="GitHub top language" src="https://img.shields.io/github/languages/top/sharanreddy99/walmart_order_parser">
+   <img alt="GitHub code size in bytes" src="https://img.shields.io/github/languages/code-size/sharanreddy99/walmart_order_parser">
+
 <p>
 <p align="center">
 	<!-- default option, no dependency badges. -->
