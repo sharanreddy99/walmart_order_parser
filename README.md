@@ -316,10 +316,6 @@ The walmart_order_parser project offers a comprehensive solution for managing Wa
 
 ##  Getting Started
 
-**System Requirements:**
-
-* **JavaScript**: `version x.y.z`
-
 ###  Installation
 
 <h4>From <code>source</code></h4>
