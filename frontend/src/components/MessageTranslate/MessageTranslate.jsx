@@ -108,9 +108,12 @@ const MessageTranslate = () => {
 
   const handlePassedText = () => {
     const textArr = orderText.split("ordered by");
-    if (textArr.length == 2 && state.groups[textArr[1].replace(/\s+/g, "")]) {
-      const groupName = textArr[1].replace(/\s+/g, "").toLowerCase();
-      if (textArr[0].replace(/\s+/g, "").toLocaleLowerCase() == "all") {
+    if (
+      textArr.length == 2 &&
+      state.groups[textArr[1].replace(/^\s+|\s+$/gm, "")]
+    ) {
+      const groupName = textArr[1].replace(/^\s+|\s+$/gm, "").toLowerCase();
+      if (textArr[0].replace(/^\s+|\s+$/gm, "").toLocaleLowerCase() == "all") {
         postHandleOnDrop(state.orderDetails.ordersArr, groupName);
       } else {
         const currItems = textArr[0].trim().toLowerCase().split(";;");

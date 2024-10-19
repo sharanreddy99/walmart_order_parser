@@ -250,8 +250,8 @@ def user_auth():
         name = reqdata["name"]
         email = reqdata["email"]
 
-        userID = add_or_update_users(name, email)
-        return {"userID": userID, "name": name, "email": email}
+        userID, userName, userEmail = add_or_update_users(name, email)
+        return {"userID": userID, "name": userName, "email": userEmail}
 
     except Exception as e:
         return "API Failed. Please verify the data.", 500

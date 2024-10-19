@@ -194,4 +194,4 @@ def add_or_update_users(name, email):
         db.session.refresh(new_user)
         return new_user.ID
 
-    return existing_user[0].ID
+    return existing_user[0].ID, existing_user[0].name, existing_user[0].email
